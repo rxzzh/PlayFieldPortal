@@ -1,6 +1,7 @@
 package com.playfieldportal.feature.settings.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -12,6 +13,7 @@ import com.playfieldportal.core.data.repository.ThemePrefKeys
 import com.playfieldportal.core.data.repository.ThemeTiers
 import com.playfieldportal.core.data.repository.UiMediaStore
 import com.playfieldportal.core.domain.model.TextLegibilityStyle
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -67,6 +69,7 @@ class DisplaySettingsViewModelFontColorTest {
 
     @After
     fun tearDown() {
+        vm.viewModelScope.cancel()
         Dispatchers.resetMain()
     }
 
