@@ -1,7 +1,5 @@
 package com.playfieldportal.feature.xmb.ui
 
-import com.playfieldportal.core.ui.theme.withPfpFont
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -370,7 +368,7 @@ private fun DrawScope.drawGameTitle(textMeasurer: TextMeasurer, gameTitle: Strin
             fontSize = 30.sp,
             letterSpacing = 0.5.sp,
             textAlign = TextAlign.Center,
-        ).withPfpFont(),
+        ),
         constraints = Constraints(maxWidth = maxWidth),
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
