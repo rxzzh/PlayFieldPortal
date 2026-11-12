@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -31,6 +33,8 @@ import com.playfieldportal.core.ui.theme.LocalPFPColors
  * glyph color (see [matteColorFor]). The default [IconLegibilityStyle.NONE] renders the plain
  * `Image` below, bit-identical to pre-matte builds.
  *
+ * Color.Unspecified preserves a shaded vector's authored colors; explicit colors tint it.
+ *
  * NOT for content imagery (game artwork, album covers, app icons, photos) — those keep
  * their own colors; use Image/AsyncImage directly.
  */
@@ -43,14 +47,14 @@ fun PortalIcon(
     contentScale: ContentScale = ContentScale.Fit,
 ) {
     val style = LocalIconLegibility.current
-    val matte = matteColorFor(style, tint)
+    val matte = matteColorFor(style, tint.takeOrElse { Color.White })
     if (matte == null) {
         // NONE — today's rendering, exactly as it shipped. No draw cost added.
         Image(
             painter = painter,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            colorFilter = ColorFilter.tint(tint, BlendMode.SrcIn),
+            colorFilter = tint.takeIf { it.isSpecified }?.let { ColorFilter.tint(it, BlendMode.SrcIn) },
             modifier = modifier,
         )
         return
@@ -65,7 +69,7 @@ fun PortalIcon(
         painter = painter,
         contentDescription = contentDescription,
         matteColor = matte,
-        glyphColor = tint,
+        glyphColor = tint.takeIf { it.isSpecified },
         offsets = matteOffsets(style),
         radiusPx = radiusPx,
         contentScale = contentScale,

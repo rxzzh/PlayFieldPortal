@@ -1,5 +1,6 @@
 package com.playfieldportal.core.ui.icons
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -7,6 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -25,9 +29,8 @@ import com.playfieldportal.core.domain.model.IconLegibilityStyle
 /**
  * The one draw node both matte surfaces share: a Box whose `onDrawBehind` lays the fitted glyph
  * at [offsets] * [radiusPx] in the matte color, then draws the glyph itself at the true origin
- * — glyph last, so the matte never shows through a semi-transparent glyph. The item column is
- * a LazyColumn, so this must stay ONE node (no stacked Image layers — node count multiplies on
- * every scroll).
+ * — glyph last, so the matte never shows through a semi-transparent glyph. Contours keep one
+ * draw node; the explicit offset-shadow styles use a separate blurred layer behind sharp art.
  *
  * [radiusPx] arrives precomputed (callers convert dp with LocalDensity — never hardcode px).
  *
@@ -52,6 +55,30 @@ internal fun IconMatteSurface(
     // matte copies still inherit the bitmap's alpha shape: SrcIn keeps the source alpha, so
     // transparent regions of the art produce no matte either.
     val glyphFilter = glyphColor?.let { ColorFilter.tint(it, BlendMode.SrcIn) }
+
+    // PSP's offset shadow is a soft silhouette below the icon, not a second hard outline.
+    // Keep contour modes on the inexpensive single-node path; only the explicit shadow
+    // modes need a blurred offscreen layer. The glyph itself stays sharp and untinted.
+    if (offsets.size == 1) {
+        val displacement = offsets.single() * radiusPx
+        Box(modifier.semantics { if (contentDescription != null) this.contentDescription = contentDescription }) {
+            Image(
+                painter = painter, contentDescription = null, contentScale = contentScale,
+                colorFilter = matteFilter,
+                modifier = Modifier.matchParentSize().graphicsLayer {
+                    translationX = displacement.x * 0.65f
+                    translationY = displacement.y * 1.6f
+                    renderEffect = BlurEffect(radiusPx * 1.25f, radiusPx * 1.25f, TileMode.Decal)
+                    alpha = 0.65f
+                },
+            )
+            Image(
+                painter = painter, contentDescription = null, contentScale = contentScale,
+                colorFilter = glyphFilter, modifier = Modifier.matchParentSize(),
+            )
+        }
+        return
+    }
 
     Box(
         modifier

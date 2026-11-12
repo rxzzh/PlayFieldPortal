@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector reconstruction; PSP 6.61 raster used as a local visual reference. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="64dp" android:height="64dp" android:viewportWidth="64" android:viewportHeight="64">
+<path android:pathData="M23,14 A9,9 0,1 1,22.99 14 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+<path android:pathData="M11,49 C11,29 35,29 35,49 L35,53 L11,53 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+<path android:pathData="M43,19 A7,7 0,1 1,42.99 19 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+<path android:pathData="M37,37 C48,30 57,38 57,49 L57,53 L40,53 C40,47 40,41 37,37 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+</vector>

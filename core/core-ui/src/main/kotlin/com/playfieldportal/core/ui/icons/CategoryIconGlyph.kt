@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.playfieldportal.core.ui.theme.LocalPFPColors
 import com.playfieldportal.core.domain.model.IconLegibilityStyle
 
 /** Renders the category icon for [iconKey] from its individual drawable (no sprite sheet, no
@@ -49,8 +50,11 @@ fun CategoryIconGlyph(
         )
         return
     }
+    val catalogIcon = categoryIconFor(iconKey)
+    val color = LocalPFPColors.current.iconColor
     PortalIcon(
-        painter = painterResource(categoryIconFor(iconKey).resId),
+        painter = painterResource(catalogIcon.resId),
+        tint = if (catalogIcon.shaded && color == Color.White) Color.Unspecified else color,
         contentDescription = contentDescription,
         modifier = modifier,
     )

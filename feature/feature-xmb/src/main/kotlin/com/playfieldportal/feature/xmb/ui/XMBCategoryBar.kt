@@ -50,9 +50,9 @@ import com.playfieldportal.themekit.XmbLayoutSpec
 private val SelectedIcon = Color.White
 private val LabelInactive = com.playfieldportal.core.ui.theme.ThemeTokens.XmbInactiveLabel
 private val SelectedLabelShadow = Shadow(
-    color = Color(0x73001627),
-    offset = Offset.Zero,
-    blurRadius = 12f,
+    color = Color(0x78000000),
+    offset = Offset(1.5f, 2.5f),
+    blurRadius = 4.5f,
 )
 
 // Width of a single category slot. Exposed so the subitem column (XMBShell) can

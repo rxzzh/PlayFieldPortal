@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector reconstruction; PSP 6.61 raster used as a local visual reference. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="64dp" android:height="64dp" android:viewportWidth="64" android:viewportHeight="64">
+<path android:pathData="M11,19 C17,16 20,20 24,20 L40,20 C44,20 47,16 53,19 C57,23 59,33 62,46 C64,55 58,57 53,51 L44,41 L20,41 L11,51 C6,57 0,55 2,46 C5,33 7,23 11,19 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+<path android:pathData="M13,22 C17,20 21,24 25,24 L39,24 C43,24 47,20 51,22" android:fillColor="#00000000" android:strokeWidth="1.2" android:strokeColor="#F3F4F7" android:strokeLineJoin="round" android:strokeLineCap="round"/>
+</vector>

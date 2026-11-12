@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector reconstruction; PSP 6.61 raster used as a local visual reference. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="64dp" android:height="64dp" android:viewportWidth="64" android:viewportHeight="64">
+<path android:pathData="M8,13 L16,13 L16,18 L48,18 L48,13 L56,13 L56,53 L48,53 L48,48 L16,48 L16,53 L8,53 Z M16,24 L16,42 L48,42 L48,24 Z M10,18 L10,23 L14,23 L14,18 Z M10,28 L10,33 L14,33 L14,28 Z M10,38 L10,43 L14,43 L14,38 Z M50,18 L50,23 L54,23 L54,18 Z M50,28 L50,33 L54,33 L54,28 Z M50,38 L50,43 L54,43 L54,38 Z" android:fillType="evenOdd" android:strokeColor="#F7F7FC" android:strokeWidth="0.55"><aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="10" android:endX="0" android:endY="56">
+<item android:color="#FFFFFF" android:offset="0"/>
+<item android:color="#F9F9FB" android:offset="0.18"/>
+<item android:color="#B5B8C2" android:offset="0.52"/>
+<item android:color="#DADCE3" android:offset="0.68"/>
+<item android:color="#FAFAFC" android:offset="1"/>
+</gradient></aapt:attr></path>
+</vector>

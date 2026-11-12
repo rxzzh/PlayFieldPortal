@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vector reconstruction; PSP 6.61 raster used as a local visual reference. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:width="64dp" android:height="64dp" android:viewportWidth="64" android:viewportHeight="64">
+<path android:pathData="M32,7 A25,25 0,1 1,31.99 7 Z M32,12 C18,12 18,52 32,52 C46,52 46,12 32,12 M32,12 C40,12 40,52 32,52 C24,52 24,12 32,12 M8,25 L56,25 M8,39 L56,39" android:fillColor="#00000000" android:strokeWidth="3.8" android:strokeColor="#F3F4F7" android:strokeLineJoin="round" android:strokeLineCap="round"/>
+</vector>
