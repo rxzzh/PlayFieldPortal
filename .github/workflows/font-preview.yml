@@ -61,6 +61,7 @@ jobs:
         run: >-
           ./gradlew
           -Ppfp.skipDiscordNative=true
+          -Ppfp.fontPreviewTests=true
           :core:core-data:testDebugUnitTest --tests '*CustomFontImportTest'
           :core:core-ui:testDebugUnitTest --tests '*CustomFontInheritanceTest'
           :feature:feature-backup:testDebugUnitTest --tests '*BackupKeyCoverageTest'

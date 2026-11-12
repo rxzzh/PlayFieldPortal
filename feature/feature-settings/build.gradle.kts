@@ -54,6 +54,11 @@ tasks.withType<Test>().configureEach {
     // sandbox per class); that is the right trade for a module whose tests otherwise pass or fail
     // based on what ran before them.
     forkEvery = 1
+    // --tests filters inside JUnit, after forkEvery has already started each candidate JVM.
+    // The preview checks the same ViewModel cases, but avoids launching empty test processes.
+    if (providers.gradleProperty("pfp.fontPreviewTests").orNull == "true") {
+        include("**/DisplaySettingsViewModel*Test.class")
+    }
 }
 
 dependencies {
