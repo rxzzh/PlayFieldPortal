@@ -63,8 +63,8 @@ private const val TAU = 6.2831853f
  * single definition of "the device is busy or conserving" that both the shader and the decoder
  * obey) and passed down; callers that render only a wave (boot) can ignore it entirely.
  *
- * The wave itself is the authentic PSP XMB "heavenly" flow: a soft, luminous ribbon low on the
- * screen built from several summed sine waves, with a glowing crest and a scatter of sparkles over
+ * The wave is a reconstruction of the PSP XMB flow: a soft, luminous ribbon low on the
+ * screen built from several summed sine waves, with a glowing crest over
  * a monthly-tinted vertical gradient. On API 33+ it's a single AGSL fragment shader; older devices
  * get a Canvas fallback (glowing stroked ribbons) that keeps the same silhouette.
  */
@@ -188,12 +188,16 @@ private fun WaveBackground(
             return@produceState
         }
         var startMs = -1L
+        var previousFrame = -1L
         while (true) {
             withInfiniteAnimationFrameMillis { frameMs ->
                 if (startMs < 0L) startMs = frameMs
-                value = waveTimeSeconds(frameMs, startMs, speed)
+                val frame = pspWaveFrameAt(frameMs - startMs)
+                if (frame != previousFrame) {
+                    value = waveTimeSeconds(frameMs, startMs, speed)
+                    previousFrame = frame
+                }
             }
-            delay(WAVE_FRAME_INTERVAL_MS)
         }
     }
 
@@ -237,44 +241,43 @@ private fun WaveBackground(
 /** The animated wave repaints at ~30 fps; see WaveBackground. */
 internal const val WAVE_FRAME_INTERVAL_MS = 33L
 
+// Bucket VSYNC timestamps, rather than sleeping 33 ms after VSYNC (which produces ~20 fps
+// on a 60 Hz screen). Draw at the source model's 30 fps on both 60 Hz and 120 Hz panels.
+internal fun pspWaveFrameAt(elapsedMillis: Long): Long = elapsedMillis * 30L / 1000L
+
 /** The wave's clock: seconds since its first frame, scaled by the style's speed. */
 internal fun waveTimeSeconds(frameMs: Long, startMs: Long, speed: Float): Float =
     (frameMs - startMs) / 1000f * speed
 
 // ── AGSL wave (API 33+) ──────────────────────────────────────────────────────
-// The real PSP "Original" wave: soft, long-wavelength light FOLDS — gentle luminance sheets that
-// blend the gradient beneath toward white. Low contrast, no hard ribbon, no sparkles. Because it
-// only ever lightens the gradient, the colour always comes from whatever theme is applied.
+// Reconstructed folds driven by measured native pose/morph tracks. This is an analytic
+// redraw, not the original GMO mesh or native PSP rendering program.
 private const val AGSL_WAVE = """
 uniform float2 iResolution;
-uniform float  iTime;
-uniform float  ampScale;
-uniform float  alphaScale;
-
+uniform float phase;
+uniform float tilt;
+uniform float morph;
+uniform float ampScale;
+uniform float alphaScale;
 const float TAU = 6.2831853;
-
-// One fold: a broad soft sheet of light below crest [c], plus a faint luminous crest line.
-float fold(float y, float c, float sheet, float edge) {
-    float body = smoothstep(0.0, 0.17, y - c) * sheet;   // brightens the region below the crest
-    float line = exp(-pow((y - c) * 42.0, 2.0)) * edge;  // thin highlight riding the crest
-    return body + line;
+float fold(float y, float c, float sheet, float edge, float softness) {
+    float body = smoothstep(0.0, softness, y - c) * sheet;
+    float rim = exp(-pow((y - c) * 90.0, 2.0)) * edge;
+    float shoulder = exp(-pow((y - c - 0.018) * 20.0, 2.0)) * edge * 0.35;
+    return body + rim + shoulder;
 }
-
 half4 main(float2 fragCoord) {
-    float2 uv = fragCoord / iResolution;   // 0..1, y down
+    float2 uv = fragCoord / iResolution;
     float x = uv.x;
-    float t = iTime;
-    float a = 0.05 * ampScale;
-
-    // Two overlapping fold crests low on the screen (top ribbon removed).
-    float c2 = 0.63 + a * 0.9 * sin(x * TAU * 0.80 - t * 0.38 + 1.7);
-    float c3 = 0.75 + a * 1.2 * sin(x * TAU * 0.42 + t * 0.30 + 3.1);
-
-    float b = fold(uv.y, c2, 0.090, 0.125)
-            + fold(uv.y, c3, 0.105, 0.145);
-
-    b = clamp(b * alphaScale, 0.0, 0.6);
-    return half4(1.0, 1.0, 1.0, 1.0) * b;   // premultiplied white → SrcOver blends the gradient toward white
+    float bend = (x - 0.5) * (x - 0.5);
+    float c1 = 0.59 + ampScale * (0.12 * bend - 0.07 * morph + 0.045 * sin(x * TAU * 0.65 + phase) + 0.035 * tilt);
+    float c2 = 0.72 + ampScale * (0.10 * bend + 0.055 * sin(x * TAU * 0.48 - phase) + 0.05 * tilt);
+    float c3 = 0.85 + ampScale * (0.035 * sin(x * TAU * 0.8 + phase) - 0.025 * morph);
+    float b = fold(uv.y, c1, 0.13, 0.12, 0.24)
+            + fold(uv.y, c2, 0.12, 0.10, 0.19)
+            + fold(uv.y, c3, 0.08, 0.06, 0.15);
+    b = clamp(b * alphaScale, 0.0, 0.48);
+    return half4(1.0, 1.0, 1.0, 1.0) * b;
 }
 """
 
@@ -286,7 +289,10 @@ private fun ShaderWave(time: State<Float>, alphaScale: Float, ampScale: Float, m
     Canvas(modifier = modifier) {
         shader.setFloatUniform("iResolution", size.width, size.height)
         // Read here, in the draw phase: a tick invalidates this draw only, never composition.
-        shader.setFloatUniform("iTime", time.value)
+        val pose = pspWavePoseAt(time.value)
+        shader.setFloatUniform("phase", pose.phase)
+        shader.setFloatUniform("tilt", pose.tilt)
+        shader.setFloatUniform("morph", pose.morph)
         shader.setFloatUniform("ampScale", ampScale)
         shader.setFloatUniform("alphaScale", alphaScale)
         drawRect(brush = brush)
@@ -297,7 +303,6 @@ private fun ShaderWave(time: State<Float>, alphaScale: Float, ampScale: Float, m
 // Same soft folds approximated with low-alpha white fills (the sheet) + faint crest strokes.
 @Composable
 private fun FallbackWave(time: State<Float>, alphaScale: Float, ampScale: Float, modifier: Modifier) {
-    val amp = 0.05f * ampScale
     Spacer(
         modifier = modifier.drawWithCache {
             // Paths and strokes are made once per size and reused every frame; only their points move.
@@ -308,16 +313,17 @@ private fun FallbackWave(time: State<Float>, alphaScale: Float, ampScale: Float,
             onDrawBehind {
                 // Read here, in the draw phase: a tick invalidates this draw only, never composition.
                 val t = time.value
-                drawFold(t, crest, fill, wide, thin, base01 = 0.63f, amp01 = amp * 0.9f, freq = 0.80f, phase = 1.7f, drift = -0.38f, sheet = 0.090f * alphaScale, edge = 0.125f * alphaScale)
-                drawFold(t, crest, fill, wide, thin, base01 = 0.75f, amp01 = amp * 1.2f, freq = 0.42f, phase = 3.1f, drift = 0.30f,  sheet = 0.105f * alphaScale, edge = 0.145f * alphaScale)
+                val pose = pspWavePoseAt(t)
+                drawPspFold(pose, 0, ampScale, crest, fill, wide, thin, .13f * alphaScale, .12f * alphaScale)
+                drawPspFold(pose, 1, ampScale, crest, fill, wide, thin, .12f * alphaScale, .10f * alphaScale)
+                drawPspFold(pose, 2, ampScale, crest, fill, wide, thin, .08f * alphaScale, .06f * alphaScale)
             }
         },
     )
 }
 
-private fun DrawScope.drawFold(
-    t: Float, crestPath: Path, fillPath: Path, wide: Stroke, thin: Stroke,
-    base01: Float, amp01: Float, freq: Float, phase: Float, drift: Float,
+private fun DrawScope.drawPspFold(
+    pose: PspWavePose, layer: Int, amplitude: Float, crestPath: Path, fillPath: Path, wide: Stroke, thin: Stroke,
     sheet: Float, edge: Float,
 ) {
     val w = size.width
@@ -328,7 +334,7 @@ private fun DrawScope.drawFold(
     fillPath.moveTo(0f, h)
     for (i in 0..n) {
         val xx = i / n.toFloat()
-        val y = (base01 + amp01 * sin(xx * TAU * freq + t * drift + phase)) * h
+        val y = pspWaveCrest(layer, xx, pose, amplitude) * h
         val x = xx * w
         if (i == 0) { crestPath.moveTo(x, y); fillPath.lineTo(x, y) }
         else { crestPath.lineTo(x, y); fillPath.lineTo(x, y) }
