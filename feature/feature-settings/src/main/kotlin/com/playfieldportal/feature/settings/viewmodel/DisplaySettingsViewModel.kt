@@ -148,6 +148,8 @@ private val WAVE_STYLE_LABELS = mapOf(
 private data class Transient(
     val textContrastNotice: String?,
     val xyLayout: XYLayout,
+    val fontImporting: Boolean,
+    val fontMessage: String?,
 )
 
 data class DisplaySettingsUiState(
@@ -242,7 +244,7 @@ class DisplaySettingsViewModel @Inject constructor(
     /** The slot the UI-media picker was launched for, read back when the Uri arrives. */
     private var pendingUiMediaSlot: UiMediaSlot? = null
 
-    private val displayState = combine(
+    val uiState: StateFlow<DisplaySettingsUiState> = combine(
         context.pfpDataStore.data,
         _wallpaperMessage,
         _wallpaperImporting,
@@ -252,8 +254,10 @@ class DisplaySettingsViewModel @Inject constructor(
         combine(
             _textContrastNotice,
             controllerLayout.prefs,
-        ) { notice, layout ->
-            Transient(notice, layout.xyLayout)
+            _fontImporting,
+            _fontMessage,
+        ) { notice, layout, fontImporting, fontMessage ->
+            Transient(notice, layout.xyLayout, fontImporting, fontMessage)
         },
     ) { prefs, msg, importing, previewVisible, transient ->
         // Every UI-media fact below comes from the same DataStore emission plus one directory
@@ -268,6 +272,8 @@ class DisplaySettingsViewModel @Inject constructor(
         )
         DisplaySettingsUiState(
             customFontName       = customFontStore.selection(prefs)?.displayName,
+            fontImporting        = transient.fontImporting,
+            fontMessage          = transient.fontMessage,
             waveStyle            = runCatching {
                 WaveStyle.valueOf(prefs[KEY_WAVE_STYLE] ?: WaveStyle.ANIMATED.name)
             }.getOrDefault(WaveStyle.ANIMATED),
@@ -312,9 +318,6 @@ class DisplaySettingsViewModel @Inject constructor(
     }
         // uiMediaStore.assignments() is a directory listing — cheap, but still file IO.
         .flowOn(Dispatchers.IO)
-    val uiState: StateFlow<DisplaySettingsUiState> = combine(
-        displayState, _fontImporting, _fontMessage,
-    ) { state, busy, message -> state.copy(fontImporting = busy, fontMessage = message) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DisplaySettingsUiState())
 
     fun importFont(uri: Uri) {
