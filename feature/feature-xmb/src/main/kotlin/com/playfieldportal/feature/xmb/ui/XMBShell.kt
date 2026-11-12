@@ -1115,7 +1115,7 @@ fun XMBShell(
                 modifier = Modifier.align(Alignment.BottomEnd),
             ) {
                 ContextMenuHint(
-                    showSort = uiState.canSortCurrentList,
+                    showSort = uiState.canUseSecondaryAction,
                     sortLabel = uiState.sortActionLabel,
                     showOptions = uiState.focusedItemHasContextMenu,
                     // Always true here: the hint only renders on the main XMB with no overlay up,

@@ -881,7 +881,7 @@ data class XMBUiState(
     // primary remains the default whenever this is null.
     val activeGameDiscId: Long? = null,
     // Global launch behavior: confirm on a game launches directly (true) or opens Detail (false).
-    val directLaunch: Boolean = false,
+    val directLaunch: Boolean = true,
     val activeAppId: Long? = null,
     // Where a collection created from the App Detail screen should live — the category the app
     // row was opened from when it renders collections, otherwise the Main Game default.
@@ -1119,10 +1119,21 @@ data class XMBUiState(
     val canSortCurrentList: Boolean
         get() = activeSortModes() != null || arrangeableRootKind() != null
 
-    // What the CHANGE_SORT half of the hint pill is called here. Games opens a Filter menu rather
-    // than cycling, and the pill names actions — so it has to say which action.
+    /** X opens the focused game's editing surface; it never starts the game. */
+    val gameDetailsTarget: Long?
+        get() = focusedItem?.takeIf { it.isRealGame }?.gameId
+
+    private val isGamingColumn: Boolean
+        get() = categories.getOrNull(selectedCategoryIndex)?.let {
+            it.isGamingCategory || it.id == BuiltInCategory.GAMES
+        } == true
+
+    // The X prompt is contextual: Details on a game; sorting remains available outside Games.
+    val canUseSecondaryAction: Boolean
+        get() = gameDetailsTarget != null || (!isGamingColumn && canSortCurrentList)
+
     val sortActionLabel: String
-        get() = if (activeSortModes() === GAME_SORTS) "Filter" else "Sort"
+        get() = if (gameDetailsTarget != null) "Details" else "Sort"
 
     // Whether the bottom-right contextual button (App Drawer / Back) should be shown, per the
     // user's Touch Navigation Button setting. AUTO follows the last input source.
@@ -1541,7 +1552,7 @@ fun shouldShowContextMenuHint(state: XMBUiState, idleMs: Long): Boolean =
         !state.lastInputWasTouch &&
         !state.hasBlockingOverlay &&
         state.activeContextMenu == null &&
-        (state.focusedItemHasContextMenu || state.canSortCurrentList) &&
+        (state.focusedItemHasContextMenu || state.canUseSecondaryAction) &&
         idleMs >= (state.contextMenuHintDelaySeconds * 1_000f).toLong()
 
 /**
@@ -6653,9 +6664,25 @@ class XMBViewModel @Inject constructor(
             GamepadAction.HOME, GamepadAction.SHIFT, GamepadAction.CAPS_LOCK -> Unit
             // Cycle the sort order of the current list (PSP-style). Whichever face button
             // the user's X/Y layout assigns to sort dispatches this.
-            GamepadAction.CHANGE_SORT -> cycleSort()
+            GamepadAction.CHANGE_SORT -> onSecondaryAction()
             GamepadAction.PREV_CATEGORY,
             GamepadAction.NEXT_CATEGORY -> Unit
+        }
+    }
+
+    private fun onSecondaryAction() {
+        val state = _uiState.value
+        if (state.hasBlockingOverlay || state.markMode) return
+        val gameId = state.gameDetailsTarget
+        if (gameId != null) {
+            menuSound.play(MenuSound.SELECT)
+            _uiState.update { it.copy(
+                activeGameId = gameId,
+                activeGameAutoLaunch = false,
+                activeGameDiscId = null,
+            ) }
+        } else if (state.canUseSecondaryAction) {
+            cycleSort()
         }
     }
 
@@ -9144,14 +9171,17 @@ class XMBViewModel @Inject constructor(
         moveItemCursor(steps)
     }
 
-    /** Touch tap on row [index]: move the cursor there, or — if it's already the selected row —
-     *  activate it. Keeps touch faithful to the XMB cursor model (tap to point, tap again to open).
-     *  The controller SELECT path still activates in one press via [activateSelected]. */
+    /** Games launch on one tap when direct launch is enabled. Other rows keep the XMB cursor
+     *  model: tap to focus, tap the focused row to open. Controller SELECT always activates. */
     fun onItemTap(index: Int) {
         markTouchInput()
         val s = _uiState.value
         if (s.hasBlockingOverlay) return
-        if (index == s.selectedItemIndex) {
+        // A game is a one-tap launch; folders retain tap-to-focus / tap-to-open navigation.
+        val tapped = s.currentItems.getOrNull(index)
+        if (s.directLaunch && !s.markMode && tapped?.isRealGame == true && tapped.gameId != null) {
+            onItemSelected(index)
+        } else if (index == s.selectedItemIndex) {
             activateSelected()
         } else {
             val clamped = index.coerceIn(0, (s.currentItems.size - 1).coerceAtLeast(0))

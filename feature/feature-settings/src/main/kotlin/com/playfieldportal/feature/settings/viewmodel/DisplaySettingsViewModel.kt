@@ -190,7 +190,7 @@ data class DisplaySettingsUiState(
     val contextMenuHintDelaySeconds: Float = 2.5f,
     val touchSensitivity: TouchSensitivity = TouchSensitivity.NORMAL,
     // Confirm on a game launches it directly (true) or opens Game Detail first (false).
-    val directLaunch: Boolean = false,
+    val directLaunch: Boolean = true,
     val customWallpaperPath: String? = null,
     // Absolute path of the looping motion file, when one is set (and its poster exists).
     val motionWallpaperPath: String? = null,
@@ -297,7 +297,7 @@ class DisplaySettingsViewModel @Inject constructor(
             contextMenuHintEnabled = prefs[KEY_CONTEXT_MENU_HINT] ?: true,
             contextMenuHintDelaySeconds = (prefs[KEY_CONTEXT_MENU_HINT_DELAY_SECONDS] ?: 2.5f).coerceIn(1f, 5f),
             touchSensitivity     = TouchSensitivity.fromName(prefs[KEY_TOUCH_SENSITIVITY]),
-            directLaunch         = prefs[KEY_DIRECT_LAUNCH]   ?: false,
+            directLaunch         = prefs[KEY_DIRECT_LAUNCH]   ?: true,
             customWallpaperPath  = prefs[KEY_CUSTOM_WALLPAPER],
             motionWallpaperPath  = prefs[KEY_MOTION_WALLPAPER],
             wallpaperMessage     = msg,

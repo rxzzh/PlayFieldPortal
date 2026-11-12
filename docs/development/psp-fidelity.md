@@ -57,3 +57,15 @@ References: [PPSSPP XMB documentation](https://www.ppsspp.org/docs/getting-start
 [RCOMage](https://github.com/kakaroto/RCOMage),
 [pspdecrypt](https://github.com/John-K/pspdecrypt),
 [XMB GMO converter](https://github.com/mills32/Playstation-Portable-XMB-3D-model-converter).
+
+## Game list controls
+
+Confirm/A and one touch on a real game now launch directly by default. X opens Game Detail
+without auto-launching; its former Games Filter binding is retired. X is hidden on game
+folders/placeholders, while non-gaming columns retain their sorting shortcut. The status chip
+and Options remain separate entry points for list arrangement. Folder touch navigation and
+multi-select retain their existing behavior.
+
+The existing Direct Launch compatibility toggle is retained; the device is explicitly set on.
+Targeted controls regression: 73 tests passed (4 game-action cases, 38 contextual hints,
+26 input-mapping cases, 5 launch-gate cases).

@@ -11,18 +11,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * What confirming (tap / ✕) a game entity on the XMB does:
- *  • false (default) — open the Game Detail screen first, launch from its Play button;
- *  • true — launch straight into the game (Game Detail auto-fires its launch on open, so
- *    every launch path — emulator intent, native app, shortcut, stored intent — stays in
- *    one place; "View Game Details" in the △ menu still opens the screen for edits).
+ * Confirm/tap launches a game directly by default. X opens Game Detail for editing;
+ * turning direct launch off remains an explicit compatibility preference.
  */
 @Singleton
 class GameLaunchPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     val directLaunchFlow: Flow<Boolean> = context.pfpDataStore.data
-        .map { it[KEY_DIRECT_LAUNCH] ?: false }
+        .map { it[KEY_DIRECT_LAUNCH] ?: true }
 
     suspend fun setDirectLaunch(enabled: Boolean) =
         context.pfpDataStore.edit { it[KEY_DIRECT_LAUNCH] = enabled }

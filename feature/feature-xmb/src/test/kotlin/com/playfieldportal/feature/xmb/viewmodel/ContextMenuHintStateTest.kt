@@ -108,13 +108,14 @@ class ContextMenuHintStateTest {
     }
 
     @Test
-    fun `a sortable list shows the pill even when the focused item has no context menu`() {
+    fun `game placeholders with no details target do not offer a filter prompt`() {
         // Only the Sort half is drawn; the pill is still worth showing.
         val plain = XMBItem(id = "x", title = "Plain", type = XMBItemType.STANDARD)
         val s = eligibleState().copy(currentItems = listOf(plain), selectedPlatformId = "psp")
         assertFalse(s.focusedItemHasContextMenu)
-        assertTrue(s.canSortCurrentList)
-        assertTrue(shouldShowContextMenuHint(s, XMBViewModel.IDLE_HINT_DELAY_MS))
+        assertTrue(s.canSortCurrentList) // Touch/status sorting remains available.
+        assertFalse(s.canUseSecondaryAction)
+        assertFalse(shouldShowContextMenuHint(s, XMBViewModel.IDLE_HINT_DELAY_MS))
     }
 
     @Test
