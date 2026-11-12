@@ -41,7 +41,7 @@ fun CategoryIconGlyph(
     }
     // Console art (not a themeable slot): same two-tier check on its sysicon key.
     // Unknown keys keep today's fallback — the games glyph, via the fall-through below.
-    val platformId = if (catbarSlotKeyFor(iconKey) == null) consolePlatformIdFor(iconKey) else null
+    val platformId = if (catbarSlotKeyFor(iconKey) == null && !categoryIconFor(iconKey).shaded) consolePlatformIdFor(iconKey) else null
     if (platformId != null) {
         ConsoleIcon(
             platformId = platformId,

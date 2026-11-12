@@ -263,6 +263,7 @@ fun XmbDrillFlyout(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
     onItemLongPress: (Int) -> Unit,
+    onStableItemTap: ((XMBItem) -> Unit)? = null,
     // Tap on a LEFT-column memory card. The caller decides what it means (tapping the active card
     // backs out of the drill); taps on other cards are delivered too so it can ignore them.
     onSiblingTap: (Int) -> Unit = {},
@@ -309,6 +310,7 @@ fun XmbDrillFlyout(
             belowTopY = belowTopY,
             onItemSelected = onItemSelected,
             onItemLongPress = onItemLongPress,
+            onStableItemTap = onStableItemTap,
             scrollToTopToken = scrollToTopToken,
             columnKey = columnKey,
             iconAnimatingAllowed = iconAnimatingAllowed,
@@ -329,6 +331,7 @@ private fun XmbGameColumn(
     belowTopY: Dp,
     onItemSelected: (Int) -> Unit,
     onItemLongPress: (Int) -> Unit,
+    onStableItemTap: ((XMBItem) -> Unit)? = null,
     scrollToTopToken: Int = 0,
     columnKey: Any? = null,
     iconAnimatingAllowed: Boolean = false,
@@ -374,7 +377,7 @@ private fun XmbGameColumn(
                     item = item,
                     isSelected = i == selectedIndex,
                     showText = true,   // every game card keeps its [Title] / {Platform (Emulator)} label
-                    onClick = { onItemSelected(i) },
+                    onClick = { onStableItemTap?.invoke(item) ?: onItemSelected(i) },
                     onLongPress = { onItemLongPress(i) },
                     showIcon = true,
                     // Only the active card animates (its rows funnel through the same per-row gate).
@@ -465,6 +468,7 @@ fun XMBItemList(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
     onItemLongPress: (Int) -> Unit,
+    onStableItemTap: ((XMBItem) -> Unit)? = null,
     // Increments when the list must snap to the top regardless of cursor position (e.g. a sort
     // cycle). Without it the reorder would glide the old position to the new one.
     scrollToTopToken: Int = 0,
@@ -582,7 +586,7 @@ fun XMBItemList(
                     // rest dimmed) — labels show unless the caller asks for an icon-only column
                     // (the drill flyout's memory-card cross).
                     showText = showLabels,
-                    onClick = { onItemSelected(i) },
+                    onClick = { onStableItemTap?.invoke(item) ?: onItemSelected(i) },
                     onLongPress = { onItemLongPress(i) },
                     showIcon = showIcons,
                     trailingCursor = drillCursorOnSelected && i == selectedIndex,

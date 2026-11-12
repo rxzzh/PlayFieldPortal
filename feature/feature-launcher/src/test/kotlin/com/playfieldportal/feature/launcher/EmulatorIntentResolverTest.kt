@@ -71,6 +71,28 @@ class EmulatorIntentResolverTest {
 
     private fun Intent.hasFlags(flags: Int) = this.flags and flags == flags
 
+    @Test
+    fun `PPSSPP free and gold route each selected ROM into the existing activity`() {
+        for (pkg in listOf("org.ppsspp.ppsspp", "org.ppsspp.ppssppgold")) {
+            installPackage(pkg)
+            registerViewActivity(pkg, "org.ppsspp.ppsspp.PpssppActivity")
+            val profile = EmulatorProfile(
+                id = "test_ppsspp", name = "PPSSPP", packageName = pkg,
+                activityClass = "org.ppsspp.ppsspp.PpssppActivity",
+                intentType = IntentType.ACTION_VIEW, supportedPlatformIds = listOf("psp"),
+            )
+            val gameA = safGame("psp")
+            val gameB = gameA.copy(romUri = "content://com.android.externalstorage.documents/document/roms%2Fother.iso")
+            for (game in listOf(gameA, gameB, gameA)) {
+                val intent = runBlocking { resolver.resolve(game, profile).getOrThrow() }
+                assertEquals(game.romUri, intent.data.toString())
+                assertTrue(intent.hasFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+                assertTrue(intent.hasFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                assertFalse(intent.hasFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            }
+        }
+    }
+
     // ── attachRomData (yuzu-lineage TECH_DISCOVERED launch) ──────────────────
 
     @Test

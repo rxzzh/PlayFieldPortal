@@ -26,6 +26,7 @@ val CATEGORY_ICON_CATALOG: List<CategoryIcon> = listOf(
     CategoryIcon("ic_network",   "Network",   R.drawable.psp_network, shaded = true),
     CategoryIcon("ic_appstore",  "App Store", R.drawable.psp_appstore, shaded = true),
     CategoryIcon("ic_social",    "Social",    R.drawable.psp_social, shaded = true),
+    CategoryIcon("ic_apps", "Apps", R.drawable.psp_apps, shaded = true),
     CategoryIcon("ic_achievements", "Shiba Coins", R.drawable.catbar_achievements),
     // ── Console icons (sysicon_* art, also used for memory-card media) ────────────
     // Favorites is the Game column's Favorites card, not a column: its art is sysicon_favorites,

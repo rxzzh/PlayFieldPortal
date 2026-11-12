@@ -99,6 +99,7 @@ import com.playfieldportal.feature.xmb.ui.detail.ShibaCoinsTarget
 import com.playfieldportal.feature.xmb.ui.detail.ShibaLibraryScreen
 import com.playfieldportal.feature.xmb.ui.detail.VideoDetailScreen
 import com.playfieldportal.feature.xmb.ui.photo.PhotoViewerScreen
+import com.playfieldportal.feature.xmb.viewmodel.XMBItem
 import com.playfieldportal.feature.xmb.viewmodel.PlaylistImportQueue
 import com.playfieldportal.feature.xmb.viewmodel.PlaylistImportReport
 import com.playfieldportal.feature.xmb.viewmodel.XMBUiState
@@ -217,6 +218,7 @@ fun XMBShellContainer(
         onXmbSortTapped = viewModel::onSortLabelTapped,
         onOpenAppDrawer = viewModel::onOpenAppDrawer,
         onItemTap = viewModel::onItemTap,
+        onStableItemTap = viewModel::onStableItemTap,
         onItemLongPress = viewModel::onItemLongPress,
         onPlatformLongPress = viewModel::onPlatformLongPress,
         onUserInteraction = viewModel::onUserInteraction,
@@ -486,6 +488,7 @@ fun XMBShell(
     onOpenAppDrawer: () -> Unit = {},
     // Row tap: move the cursor there, or activate if it's already selected (see XMBViewModel.onItemTap).
     onItemTap: (Int) -> Unit = {},
+    onStableItemTap: ((XMBItem) -> Unit)? = null,
     onItemLongPress: (Int) -> Unit = {},
     onPlatformLongPress: (Int) -> Unit = {},
     onUserInteraction: () -> Unit = {},
@@ -989,6 +992,7 @@ fun XMBShell(
                             items = uiState.currentItems,
                             selectedIndex = uiState.selectedItemIndex,
                             onItemSelected = onItemTap,
+                            onStableItemTap = onStableItemTap,
                             onItemLongPress = onItemLongPress,
                             // Tapping the active memory card under the caticon backs out of the
                             // drill; taps on the other (dimmed) cards are ignored.
@@ -1027,6 +1031,7 @@ fun XMBShell(
                                 items = uiState.currentItems,
                                 selectedIndex = itemSelectedIndex,
                                 onItemSelected = onItemTap,
+                                onStableItemTap = onStableItemTap,
                                 onItemLongPress = onItemLongPress,
                                 scrollToTopToken = uiState.scrollToTopToken,
                                 columnKey = uiState.viewCursorKey(),

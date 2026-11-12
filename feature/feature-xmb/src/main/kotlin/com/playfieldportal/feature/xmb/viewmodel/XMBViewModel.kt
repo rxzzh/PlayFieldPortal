@@ -3650,7 +3650,13 @@ class XMBViewModel @Inject constructor(
             // query has to be dropped — see [clearGameQuery].
             val query = if (next.viewCursorKey() == state.viewCursorKey()) next.gameQuery else ""
             // Marks belong to the list they were made in, like the query.
-            next.copy(selectedItemIndex = remembered, gameQuery = query, markMode = false, markedGameIds = emptySet())
+            next.copy(
+                selectedItemIndex = remembered, gameQuery = query,
+                markMode = false, markedGameIds = emptySet(),
+                // Never expose the previous view's rows under the destination cursor. Room loads
+                // asynchronously; the empty boundary also forces the new list to land, not scroll.
+                currentItems = emptyList(), landingToken = state.landingToken + 1,
+            )
         }
         loadItemsForCategory(currentCategory())
     }
@@ -9173,6 +9179,11 @@ class XMBViewModel @Inject constructor(
 
     /** Games launch on one tap when direct launch is enabled. Other rows keep the XMB cursor
      *  model: tap to focus, tap the focused row to open. Controller SELECT always activates. */
+    fun onStableItemTap(item: XMBItem) {
+        val index = _uiState.value.currentItems.indexOfLaunchTarget(item)
+        if (index >= 0) onItemTap(index)
+    }
+
     fun onItemTap(index: Int) {
         markTouchInput()
         val s = _uiState.value
@@ -10005,10 +10016,11 @@ class XMBViewModel @Inject constructor(
         // Touch guard: XMB rows must never activate while any overlay is up (the gamepad path is
         // guarded in the dispatcher; this closes the same hole for taps that slip through an
         // overlay's non-interactive areas).
-        if (_uiState.value.hasBlockingOverlay) return
+        val snapshot = _uiState.value
+        if (snapshot.hasBlockingOverlay) return
+        val item = snapshot.currentItems.getOrNull(index) ?: return
+        val category = snapshot.categories.getOrNull(snapshot.selectedCategoryIndex)
         _uiState.update { it.copy(selectedItemIndex = index) }
-        val category = _uiState.value.categories.getOrNull(_uiState.value.selectedCategoryIndex)
-        val item     = _uiState.value.currentItems.getOrNull(index)
 
         // Multi-select: activating a row marks it instead of opening it (a second tap on the
         // focused row arrives here too).

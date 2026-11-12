@@ -345,6 +345,14 @@ class EmulatorIntentResolver(
     }
 
     private fun Intent.applyProfileFlags(profile: EmulatorProfile) {
+        // PPSSPP 1.19+ handles a ROM switch in onNewIntent. NEW_TASK alone can bring an
+        // old task's top activity (a different ROM) forward; CLEAR_TOP + SINGLE_TOP routes
+        // the selected URI to the existing emulator instead of stacking native instances.
+        if (action == Intent.ACTION_VIEW && profile.packageName in setOf(
+                "org.ppsspp.ppsspp", "org.ppsspp.ppssppgold",
+            )) {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
         profile.intentFlags.forEach { flag ->
             when (flag) {
                 "CLEAR_TASK" -> addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

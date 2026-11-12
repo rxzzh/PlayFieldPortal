@@ -14,6 +14,15 @@ import org.junit.Test
 class XmbStepMotionTest {
 
     @Test
+    fun `return from a submenu lands immediately even when the empty load is conflated`() {
+        val child = StepInputs(rawSelectedIndex = 12, itemCount = 24, scrollToTopToken = 0, columnKey = null, moving = false, landingToken = 8)
+        val parent = StepInputs(rawSelectedIndex = 2, itemCount = 5, scrollToTopToken = 0, columnKey = null, moving = false, landingToken = 9)
+        assertEquals(StepMotion.Snap(2), xmbStepMotion(child, parent))
+        val loading = parent.copy(itemCount = 0)
+        assertEquals(StepMotion.Snap(2), xmbStepMotion(loading, parent))
+    }
+
+    @Test
     fun `step spring constants are the category bar's slide values`() {
         assertEquals(Spring.StiffnessMediumLow, XmbStepSpring.STIFFNESS, 0f)
         assertEquals(Spring.DampingRatioNoBouncy, XmbStepSpring.DAMPING, 0f)
