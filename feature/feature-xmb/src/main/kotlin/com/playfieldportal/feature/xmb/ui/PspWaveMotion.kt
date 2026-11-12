@@ -38,6 +38,14 @@ internal fun pspWaveCrest(layer: Int, x: Float, pose: PspWavePose, amplitude: Fl
     }
 }
 
+/** Conservative minimum crest minus the shader's transparent margin, without sampling x. */
+internal fun pspWaveInvisibleTop(pose: PspWavePose, amplitude: Float): Float =
+    (minOf(
+        .59f + amplitude * (-.07f * pose.morph - .045f + .035f * pose.tilt),
+        .72f + amplitude * (-.055f + .05f * pose.tilt),
+        .85f + amplitude * (-.035f - .025f * pose.morph),
+    ) - .07f).coerceIn(0f, 1f)
+
 private val TILT = floatArrayOf(
     0.000000f, 0.642788f,
     0.066667f, 0.610099f,

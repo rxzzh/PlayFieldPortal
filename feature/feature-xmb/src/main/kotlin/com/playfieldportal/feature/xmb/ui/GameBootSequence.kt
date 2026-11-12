@@ -119,18 +119,14 @@ private const val BAR_Y = 0.47f // from the top
 internal data class Sweep(val startMs: Int, val endMs: Int, val intensity: Float)
 
 /**
- * The built-in GameBoot presentation — a white field, a monoline `PFP` mark with the game's title
- * under it, and a chromatic bloom that crosses the screen on the bundled launch sound's attacks.
+ * The built-in GameBoot presentation — a white field and a chromatic bloom that crosses the
+ * screen on the bundled launch sound's attacks. Branding is deferred for a future personal mark.
  *
  * This is GameBoot's default, and deliberately NOT a bundled video: it is drawn on a surface that
  * is already live, so it costs no decoder warm-up at the one moment the user is waiting for their
  * game, it scales to any screen, and it can drop its motion without dropping its timing — none of
  * which a shipped MP4 could do. A user who wants something else assigns their own clip, and
  * [GameBootOverlay] plays that instead, with its own audio.
- *
- * **The mark is drawn, not set.** `PFP` is a [Path] of uniform right-angle strokes rather than
- * text, which is what lets it stay crisp at any size and survive a reduced-motion pass at full
- * quality. Only the title beneath it is type, in [InterFamily].
  *
  * **Real time, not animation time.** The timeline is driven by [withFrameMillis] deltas rather
  * than an `Animatable` + `tween`, because tween durations are scaled by the system's animator
@@ -159,7 +155,6 @@ fun GameBootSequence(
     val currentOnFinished by rememberUpdatedState(onFinished)
     // Measuring inside the draw phase would normally be wasteful, but the style and constraints
     // are identical on every frame, so all five thousand milliseconds of it are one cache hit.
-    val textMeasurer = rememberTextMeasurer()
 
     LaunchedEffect(Unit) {
         // Wall-clock frame deltas: see the KDoc — an animator-scaled tween would let the launch
@@ -179,8 +174,8 @@ fun GameBootSequence(
         // BlendMode.Multiply below correct without an offscreen layer: the destination the blooms
         // read is this white, never the black the overlay painted underneath.
         drawRect(FIELD)
-        drawPfpMark()
-        drawGameTitle(textMeasurer, gameTitle)
+        // The personal mark is deferred. Keep the light/sound presentation without branding,
+        // including when a custom clip cannot be read and this built-in fallback is used.
 
         if (!reduced) SWEEPS.forEach { drawSweep(it, ms) }
 

@@ -30,8 +30,8 @@ The PSP 6.61 updater was downloaded from Sony's public original endpoint. MD5:
 The local evaluation directory, outside this repository, contains the firmware, RCO dumps,
 PSAR/RLZ/GIM conversion tools, decoded PNGs, and audio. Those files are not bundled or committed.
 The device's user-media tier contains four extracted PSP cues (navigation, cancel, decide, error).
-The separately assigned local 2.47-second transition clip combines PFP's own geometric mark with
-PSP light/sound reference material. The PMF audio required private-stream demux; a video-only
+The separately assigned local 2.47-second transition clip contains the light/sound reference
+material without launcher lettering; the user deferred a personal logo. The PMF audio required private-stream demux; a video-only
 conversion misses that track. The logo must also be supplied separately: the original PMF alone
 contains only the light pass.
 
@@ -114,3 +114,47 @@ own activity; Lenneth and Yuusha or2 emitted their matching native PPSSPP BOOT p
 runtime switches in the same PPSSPP process. All 33 pre-existing save-data files matched their
 pre-upgrade bytes; only the non-save `.nomedia` markers were recreated by PPSSPP. The test does
 not establish full gameplay compatibility for the entire library.
+
+
+### Apps, system status and menu rendering (2026-11-12)
+
+The personal handheld configuration now orders visible columns as Settings, Photo, Music, Game,
+Apps, App Store, Network. Chrome, Bilibili HD, Clash VPN and YouTube are explicitly assigned to
+Apps. Their landscape ICON0 cards and backgrounds use the actual installed/official brand art.
+Steam Link remains the fixed UMD insertion; its main image is a real Valve Steam Deck press
+photo, while its previously selected background remains. Device artwork, ROMs, font and private
+media are not bundled in this repository.
+
+The status strip derives VPN presence and system HTTP/PAC proxy configuration from lifecycle-
+scoped ConnectivityManager callbacks and the proxy-change broadcast. It distinguishes VPN ON,
+PROXY ON, PROXY OFF and unknown. This reports local OS configuration, not internet reachability
+or the health of a particular proxy service. It never starts a VPN or probes an external site.
+Battery state is initialized from the sticky system broadcast and refreshed on resume; missing
+or malformed level/scale data retains the last valid reading rather than inventing zero.
+
+Category changes now reuse cached root rows until the current Room result arrives. The item
+column has no category-entry vertical animation or outgoing/incoming double tree. Category
+icon size is measured once; animation state is read in placement/graphics layers, avoiding
+per-frame recomposition and shadow texture regeneration. The established spring timings remain; a shorter tween experiment did not improve overall
+frame delivery on the handheld. The wave shader uses an analytic crest bound to clip its invisible upper region before
+fragment shading, then skips transparent samples inside the remainder. A half-resolution offscreen experiment was rejected after it increased composition
+cost on the Odin2 Mini; the final wave remains full resolution. Offset icon/text shadows are
+broader, denser and lower, using the locally inspected reference masks as a visual guide.
+
+Settings > System > Memory & Background Apps exposes the OS cached-process cleanup API, displays
+actual available memory and reports requested packages rather than claiming process deaths.
+It excludes Home, persistent and system-UID processes. Android may retain previous/protected
+apps; this is not a guaranteed force-stop. Android 14+ disables cross-app cleanup and offers the
+system App Settings entry instead. No privileged helper, root or Shizuku requirement is added.
+
+Validation for this revision: 128 targeted JVM/Robolectric checks passed with zero failures.
+Lite debug builds successfully. Controlled on-device Photo/Music frame measurements, rejected
+experiments, screenshots and the private final backup are recorded under the parent workspace's
+`pfp-revisions/apps-proxy/` and `pfp-backups/2026-11-12-apps-proxy-final/`. Frame measurements are a
+single controlled debug-build menu scenario, not a full application or game-performance claim.
+
+The final paired Photo/Music sample recorded 319 baseline and 329 revised frames: P50 14 -> 11 ms,
+P90 36 -> 30 ms, P95 69 -> 32 ms and P99 89 -> 73 ms. Deadline-missed frames were 16 (5.02%) and
+19 (5.78%), respectively: the long-tail frame times improved, but this sample does not establish
+a lower jank rate. The last 120 frame records show UI scheduling/work-to-sync P90 31.97 -> 15.32 ms;
+GPU P90 remained 14 ms. The final manifest-only rebuild preserves the measured rendering code.

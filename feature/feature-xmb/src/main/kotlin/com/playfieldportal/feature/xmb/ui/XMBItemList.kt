@@ -182,9 +182,9 @@ private val SecondaryText = com.playfieldportal.core.ui.theme.ThemeTokens.XmbSec
 private val InactiveText = com.playfieldportal.core.ui.theme.ThemeTokens.XmbInactiveLabel
 // Soft dark halo behind the bright selected label — keeps white legible on the light wave.
 private val SelectedTextShadow = Shadow(
-    color = Color(0x78000000),
-    offset = Offset(1.5f, 2.5f),
-    blurRadius = 4.5f,
+    color = Color(0xB0000000),
+    offset = Offset(1.0f, 3.0f),
+    blurRadius = 6f,
 )
 
 // A row's inner content padding. Shared so anything that needs to land next to a row's artwork

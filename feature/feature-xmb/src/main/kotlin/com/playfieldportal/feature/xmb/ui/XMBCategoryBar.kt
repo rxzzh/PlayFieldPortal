@@ -2,11 +2,11 @@ package com.playfieldportal.feature.xmb.ui
 
 import com.playfieldportal.core.ui.theme.withPfpFont
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.snap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -38,6 +38,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.sp
 import com.playfieldportal.core.domain.model.Category
 import com.playfieldportal.core.ui.icons.CategoryIconGlyph
@@ -50,9 +52,9 @@ import com.playfieldportal.themekit.XmbLayoutSpec
 private val SelectedIcon = Color.White
 private val LabelInactive = com.playfieldportal.core.ui.theme.ThemeTokens.XmbInactiveLabel
 private val SelectedLabelShadow = Shadow(
-    color = Color(0x78000000),
-    offset = Offset(1.5f, 2.5f),
-    blurRadius = 4.5f,
+    color = Color(0xB0000000),
+    offset = Offset(1.0f, 3.0f),
+    blurRadius = 6f,
 )
 
 // Width of a single category slot. Exposed so the subitem column (XMBShell) can
@@ -149,7 +151,7 @@ fun XMBCategoryBar(
     // catching up. Two channels, no inference. animateDpAsState also starts AT its target rather
     // than animating to it, so the bar cannot visibly slide in from the start on a resume — the
     // failure the old effect existed to prevent is now unavailable rather than prevented.
-    val slide by animateDpAsState(
+    val slide = animateDpAsState(
         targetValue = -CategorySlotWidth * selectedIndex.coerceIn(0, rowCategories.lastIndex.coerceAtLeast(0)),
         animationSpec = if (moving) snap() else XmbStepSpring.spec(),
         label = "xmbCategorySlide",
@@ -168,7 +170,7 @@ fun XMBCategoryBar(
             // only what was visible and carried position as scroll instead of width. Overflow is
             // the intent here, and the parent Box's clip is what contains it.
             modifier = Modifier
-                .offset(x = anchor + slide)
+                .offset { IntOffset((anchor + slide.value).roundToPx(), 0) }
                 .wrapContentWidth(align = Alignment.Start, unbounded = true),
         ) {
             rowCategories.forEachIndexed { index, category ->
@@ -201,13 +203,13 @@ private fun XMBCategoryItem(
     iconAnimatingAllowed: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val iconSize by animateDpAsState(
+    val iconSize = animateDpAsState(
         targetValue = if (isSelected) XmbLayoutSpec.DEFAULT.categoryIconSelectedDp.dp
         else XmbLayoutSpec.DEFAULT.categoryIconDp.dp,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
         label = "xmbCategoryIconSize",
     )
-    val itemAlpha by animateFloatAsState(
+    val itemAlpha = animateFloatAsState(
         // "Solid Unfocused Icons": skip the unfocused dim; selection still reads by size + label.
         targetValue = if (isSelected || solidUnfocusedIcons) 1f else 0.58f,
         animationSpec = spring(stiffness = Spring.StiffnessMedium),
@@ -215,7 +217,7 @@ private fun XMBCategoryItem(
     )
     // Only the active category shows its label; others stay hidden (alpha 0) until navigated to.
     // The label keeps its slot so icons never shift when labels fade in/out.
-    val labelAlpha by animateFloatAsState(
+    val labelAlpha = animateFloatAsState(
         targetValue = if (isSelected) 1f else 0f,
         animationSpec = spring(stiffness = Spring.StiffnessMedium),
         label = "xmbCategoryLabelAlpha",
@@ -239,13 +241,13 @@ private fun XMBCategoryItem(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(82.dp)
-                .alpha(itemAlpha)
+                .graphicsLayer { alpha = itemAlpha.value }
                 // Being moved: the item move's outline turned on its side, chevrons in the left
                 // and right edges because left and right are where it can go.
                 .drawWithContent {
                     drawContent()
                     if (lifted) {
-                        val side = iconSize.toPx()
+                        val side = iconSize.value.toPx()
                         drawMoveOutline(
                             icon = Rect(center.x - side / 2f, center.y - side / 2f, center.x + side / 2f, center.y + side / 2f),
                             corner = 8.dp,
@@ -267,7 +269,13 @@ private fun XMBCategoryItem(
             CategoryIconGlyph(
                 iconKey = category.iconKey,
                 contentDescription = category.name,
-                modifier = Modifier.size(iconSize),
+                // Keep measurement stable and render at the maximum size. Animation reads
+                // stay in the graphics layer instead of recomposing/remeasuring every icon.
+                modifier = Modifier.size(XmbLayoutSpec.DEFAULT.categoryIconSelectedDp.dp).graphicsLayer {
+                    val scale = iconSize.value / XmbLayoutSpec.DEFAULT.categoryIconSelectedDp.dp
+                    scaleX = scale
+                    scaleY = scale
+                },
                 categoryId = category.id,
             )
             }
@@ -285,7 +293,7 @@ private fun XMBCategoryItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp)
-                .alpha(labelAlpha),
+                .graphicsLayer { alpha = labelAlpha.value },
         )
     }
 }

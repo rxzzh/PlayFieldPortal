@@ -46,6 +46,7 @@ val SETTINGS_SCREEN_ROUTES: Set<String> = setOf(
     "settings_audio",
     "settings_controller",
     "settings_backup",
+    "settings_memory",
     "settings_logs",
     "settings_about",
     "settings_credits",
@@ -180,6 +181,7 @@ fun SettingsNavHost(
             } else {
                 LaunchedEffect(Unit) { onBack() }
             }
+            "settings_memory"     -> MemorySettingsScreen(onBack = onBack, modifier = modifier)
             "settings_logs"       -> LogsSettingsScreen(onBack = onBack, modifier = modifier)
             "settings_about"      -> AboutSettingsScreen(onBack = onBack, modifier = modifier)
             "settings_credits"    -> CreditsSettingsScreen(onBack = onBack, modifier = modifier)

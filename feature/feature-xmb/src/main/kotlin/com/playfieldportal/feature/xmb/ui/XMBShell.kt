@@ -1,17 +1,12 @@
 package com.playfieldportal.feature.xmb.ui
 
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -1008,44 +1003,26 @@ fun XMBShell(
                                 .padding(start = startPad, end = 24.dp),
                         )
                     } else {
-                        AnimatedContent(
-                            targetState = uiState.selectedCategoryIndex,
-                            transitionSpec = {
-                                (fadeIn(tween(220)) + slideInVertically(tween(260)) { it / 8 })
-                                    .togetherWith(fadeOut(tween(160)) + slideOutVertically(tween(180)) { -it / 10 })
-                                    .using(SizeTransform(clip = false))
-                            },
-                            label = "xmbCategoryItems",
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxSize()
-                                .padding(start = startPad, end = 24.dp),
-                        ) { categoryIndex ->
-                            // During a category transition AnimatedContent briefly composes BOTH the
-                            // outgoing and incoming lists. Only the settled (current) category may
-                            // render the selection highlight — otherwise the outgoing copy shows a
-                            // duplicate enlarged row that slides away (a "second cursor").
-                            val itemSelectedIndex =
-                                if (categoryIndex == uiState.selectedCategoryIndex) uiState.selectedItemIndex else -1
-                            XMBItemList(
-                                items = uiState.currentItems,
-                                selectedIndex = itemSelectedIndex,
-                                onItemSelected = onItemTap,
-                                onStableItemTap = onStableItemTap,
-                                onItemLongPress = onItemLongPress,
-                                scrollToTopToken = uiState.scrollToTopToken,
-                                columnKey = uiState.viewCursorKey(),
-                                landingToken = uiState.landingToken,
-                                listMotion = uiState.itemListMotion,
-                                barTopY = barTop,
-                                belowTopY = anchorTop,
-                                previousRiseRows = layoutSpec.previousItemRiseRows,
-                                solidUnfocusedIcons = uiState.solidUnfocusedIcons,
-                                textShadow = uiState.textShadow,
-                                iconAnimatingAllowed = iconAnimatingAllowed,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                        // One stationary item column. Category changes never translate vertically
+                        // or compose outgoing and incoming icon/shadow trees simultaneously.
+                        XMBItemList(
+                            items = uiState.currentItems,
+                            selectedIndex = uiState.selectedItemIndex,
+                            onItemSelected = onItemTap,
+                            onStableItemTap = onStableItemTap,
+                            onItemLongPress = onItemLongPress,
+                            scrollToTopToken = uiState.scrollToTopToken,
+                            columnKey = uiState.viewCursorKey(),
+                            landingToken = uiState.landingToken,
+                            listMotion = uiState.itemListMotion,
+                            barTopY = barTop,
+                            belowTopY = anchorTop,
+                            previousRiseRows = layoutSpec.previousItemRiseRows,
+                            solidUnfocusedIcons = uiState.solidUnfocusedIcons,
+                            textShadow = uiState.textShadow,
+                            iconAnimatingAllowed = iconAnimatingAllowed,
+                            modifier = Modifier.fillMaxSize().padding(start = startPad, end = 24.dp),
+                        )
                     }
 
                     // Category bar drawn ON TOP, pushed down to the crossbar line — the fixed pivot

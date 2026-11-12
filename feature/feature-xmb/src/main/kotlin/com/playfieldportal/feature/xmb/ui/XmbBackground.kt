@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -273,6 +274,7 @@ half4 main(float2 fragCoord) {
     float c1 = 0.59 + ampScale * (0.12 * bend - 0.07 * morph + 0.045 * sin(x * TAU * 0.65 + phase) + 0.035 * tilt);
     float c2 = 0.72 + ampScale * (0.10 * bend + 0.055 * sin(x * TAU * 0.48 - phase) + 0.05 * tilt);
     float c3 = 0.85 + ampScale * (0.035 * sin(x * TAU * 0.8 + phase) - 0.025 * morph);
+    if (uv.y < min(c1, min(c2, c3)) - 0.07) return half4(0.0);
     float b = fold(uv.y, c1, 0.13, 0.12, 0.24)
             + fold(uv.y, c2, 0.12, 0.10, 0.19)
             + fold(uv.y, c3, 0.08, 0.06, 0.15);
@@ -295,7 +297,11 @@ private fun ShaderWave(time: State<Float>, alphaScale: Float, ampScale: Float, m
         shader.setFloatUniform("morph", pose.morph)
         shader.setFloatUniform("ampScale", ampScale)
         shader.setFloatUniform("alphaScale", alphaScale)
-        drawRect(brush = brush)
+        // Skip known-transparent scanlines before invoking the fragment shader at all.
+        // The analytic lower bound includes the shader's seven-percent transparent margin.
+        clipRect(top = pspWaveInvisibleTop(pose, ampScale) * size.height) {
+            drawRect(brush = brush)
+        }
     }
 }
 

@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <!-- Display ▸ Lock Screen Image, the photo viewer and theme apply set the device LOCK wallpaper only. -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" android:maxSdkVersion="33" />
 
     <!-- App Drawer uninstall action — lets the system uninstaller accept our ACTION_DELETE intent
          (normal permission, auto-granted; the OS still shows its own confirmation). -->

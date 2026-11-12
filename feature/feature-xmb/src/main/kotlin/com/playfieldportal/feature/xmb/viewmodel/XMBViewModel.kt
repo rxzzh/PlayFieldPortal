@@ -568,6 +568,7 @@ fun settingsSectionItems(section: SettingsSection): List<XMBItem> = when (sectio
         XMBItem(id = "settings_photo", title = "Photo", subtitle = "Photo libraries & scanning"),
     )
     SettingsSection.SYSTEM -> listOfNotNull(
+        XMBItem(id = "settings_memory", title = "Memory & Background Apps", subtitle = "Release background apps & view memory"),
         XMBItem(id = "settings_about",  title = "About",            subtitle = "Play Field Portal"),
         XMBItem(id = "settings_logs",   title = "Logs",             subtitle = "Debug & error log viewer"),
         // Parked until the backup rework; the route stays registered.
@@ -3635,6 +3636,7 @@ class XMBViewModel @Inject constructor(
     // Photo sub-views. Drilling in/out (or re-entering a view) lands where the user left off instead
     // of snapping to the first item.
     private val viewCursor = mutableMapOf<String, Int>()
+    private val categoryRootRows = CategoryRootRows()
 
     // Performs a drill navigation with cursor memory: saves the current view's cursor, applies
     // [mutate] (which must not touch selectedItemIndex), restores the destination view's remembered
@@ -9112,14 +9114,16 @@ class XMBViewModel @Inject constructor(
         // Leaving the Social section (any path) must disarm a pending PTT-button capture, or a later
         // button press elsewhere would be bound as the PTT button.
         if (_uiState.value.capturingPttKey) cancelPttCapture()
+        categoryRootRows.rememberRoot(_uiState.value)
         val category = _uiState.value.categories.getOrNull(index)
+        val destinationRows = categoryRootRows.forCategory(category)
         exitMarkMode()
         // activeAppDrawerFilter is cleared as an invariant: landing on a category always shows the
         // plain XMB (the drawer can't normally be open here, but this keeps the contextual button
         // state correct no matter which path selected the category).
         // Every visit lands on the section's default row, PSP-style: the cursor is placed when the
         // section's rows arrive (landingPending — see landedFrom), never carried over or scrolled.
-        _uiState.update { it.copy(selectedCategoryIndex = index, selectedItemIndex = 0, landingPending = true, selectedPlatformId = null, selectedCollectionId = null, musicNav = MusicNav.Root, videoNav = VideoNav.Root, photoNav = PhotoNav.Root, socialNav = SocialNav.Root, achievementsNav = AchievementsNav.Root, settingsSectionNav = null, activeAppDrawerFilter = null) }
+        _uiState.update { it.copy(selectedCategoryIndex = index, selectedItemIndex = 0, currentItems = destinationRows, landingPending = true, selectedPlatformId = null, selectedCollectionId = null, musicNav = MusicNav.Root, videoNav = VideoNav.Root, photoNav = PhotoNav.Root, socialNav = SocialNav.Root, achievementsNav = AchievementsNav.Root, settingsSectionNav = null, activeAppDrawerFilter = null) }
         // Moving along the crossbar is the coarsest "different list" there is, and this path does
         // not go through navigateRememberingCursor, so it drops the Games query itself.
         clearGameQuery()

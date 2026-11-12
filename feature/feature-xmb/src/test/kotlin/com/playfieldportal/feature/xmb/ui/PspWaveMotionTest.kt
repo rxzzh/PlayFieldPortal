@@ -31,4 +31,10 @@ class PspWaveMotionTest {
             assertTrue(crest in .3f..1f)
         }
     }
+    @Test fun `shader scissor never removes visible crests throughout the full loop`() {
+        for (t in 0..500) for (layer in 0..2) for (i in 0..100) for (amp in listOf(1f, .65f)) {
+            val pose = pspWavePoseAt(t / 10f)
+            assertTrue(pspWaveInvisibleTop(pose, amp) <= pspWaveCrest(layer, i / 100f, pose, amp) - .07f + .000001f)
+        }
+    }
 }

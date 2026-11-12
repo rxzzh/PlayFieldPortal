@@ -12,6 +12,11 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.LinkProperties
+import android.net.Proxy
+import android.os.Handler
+import android.os.Looper
+import androidx.core.content.ContextCompat
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.SignalStrength
@@ -46,6 +51,7 @@ data class SystemStatus(
     val wifiLevel: Int? = null,       // null = not connected (hidden); 0..4 = strength
     val cellularLevel: Int? = null,   // null = no modem/SIM (hidden); 0..4 = strength
     val controllerConnected: Boolean = false,
+    val proxyState: ProxyState = ProxyState.UNKNOWN,
 )
 
 const val SIGNAL_MAX_LEVEL = 4
@@ -87,8 +93,31 @@ fun rememberSystemStatus(): SystemStatus {
             val request = NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build()
-            runCatching { cm.registerNetworkCallback(request, callback) }
+            runCatching { cm.registerNetworkCallback(request, callback, Handler(Looper.getMainLooper())) }
             onStopOrDispose { runCatching { cm.unregisterNetworkCallback(callback) } }
+        }
+    }
+
+    // VPN / system HTTP proxy presence. No service start, permission dialog or network probe.
+    LifecycleStartEffect(context) {
+        val cm = context.getSystemService<ConnectivityManager>()
+        fun push() { status = status.copy(proxyState = readProxyState(cm)) }
+        push()
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) = push()
+            override fun onLost(network: Network) = push()
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) = push()
+            override fun onLinkPropertiesChanged(network: Network, properties: LinkProperties) = push()
+        }
+        val request = NetworkRequest.Builder().removeCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN).build()
+        runCatching { cm?.registerNetworkCallback(request, callback, Handler(Looper.getMainLooper())) }
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(ctx: Context, intent: Intent) = push()
+        }
+        ContextCompat.registerReceiver(context, receiver, IntentFilter(Proxy.PROXY_CHANGE_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED)
+        onStopOrDispose {
+            runCatching { cm?.unregisterNetworkCallback(callback) }
+            runCatching { context.unregisterReceiver(receiver) }
         }
     }
 

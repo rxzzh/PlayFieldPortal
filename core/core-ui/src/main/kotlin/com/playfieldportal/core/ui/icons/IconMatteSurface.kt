@@ -66,10 +66,10 @@ internal fun IconMatteSurface(
                 painter = painter, contentDescription = null, contentScale = contentScale,
                 colorFilter = matteFilter,
                 modifier = Modifier.matchParentSize().graphicsLayer {
-                    translationX = displacement.x * 0.65f
-                    translationY = displacement.y * 1.6f
-                    renderEffect = BlurEffect(radiusPx * 1.25f, radiusPx * 1.25f, TileMode.Decal)
-                    alpha = 0.65f
+                    translationX = displacement.x * 0.4f
+                    translationY = displacement.y * 2.4f
+                    renderEffect = BlurEffect(radiusPx * 2.4f, radiusPx * 2.4f, TileMode.Decal)
+                    alpha = 0.95f
                 },
             )
             Image(

@@ -181,30 +181,25 @@ fun XmbPspStatusStrip(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    var batteryLevel   by remember { mutableIntStateOf(0) }
-    var power          by remember { mutableStateOf(BatteryPowerState.UNPLUGGED) }
+    var battery by remember(context) { mutableStateOf(readBatterySnapshot(context)) }
+    val batteryLevel = battery.level ?: 100
+    val power = battery.power
     var dateString     by remember { mutableStateOf(currentDateString()) }
     var timeString     by remember { mutableStateOf(currentTimeString()) }
 
-    LifecycleStartEffect(Unit) {
+    LifecycleStartEffect(context) {
+        // Refresh synchronously on every return; don't wait for the next battery broadcast.
+        battery = readBatterySnapshot(context, battery)
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(ctx: Context, intent: Intent) {
-                val level  = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                val scale  = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-                batteryLevel = if (level >= 0 && scale > 0) (level * 100 / scale) else 0
-                power        = batteryPowerStateOf(
-                    status  = status,
-                    plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0),
-                )
+                if (intent.action == Intent.ACTION_BATTERY_CHANGED) battery = batterySnapshotFrom(intent, battery)
             }
         }
-        ContextCompat.registerReceiver(
-            context,
-            receiver,
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED),
+        val sticky = ContextCompat.registerReceiver(
+            context, receiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED),
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
+        if (sticky != null) battery = batterySnapshotFrom(sticky, battery)
         onStopOrDispose { context.unregisterReceiver(receiver) }
     }
 
@@ -300,6 +295,15 @@ fun XmbPspStatusStrip(
                 tappable = showTouchControls,
                 onTap = onNotificationsTapped,
             )
+            val proxyColor = when (sys.proxyState) {
+                ProxyState.VPN, ProxyState.SYSTEM_PROXY -> Color(0xFF8DE1B5)
+                else -> themedText(StripMuted)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                Icon(painter = painterResource(R.drawable.ic_status_proxy), contentDescription = sys.proxyState.description,
+                    tint = proxyColor, modifier = Modifier.size(13.dp))
+                Text(sys.proxyState.label, color = proxyColor, fontSize = 9.sp, fontWeight = FontWeight.Medium)
+            }
             if (sys.controllerConnected) {
                 val override = statusSlotOverride("status_controller")
                 if (override != null) {
@@ -338,7 +342,7 @@ fun XmbPspStatusStrip(
                 }
             }
             // Low-battery red is a warning to plug in, so any time on power clears it.
-            val lowBattery = batteryLevel <= 20 && power == BatteryPowerState.UNPLUGGED
+            val lowBattery = battery.level?.let { it <= 20 } == true && power == BatteryPowerState.UNPLUGGED
             val batterySlot = if (power == BatteryPowerState.CHARGING) chargingFrameSlotKey(batteryLevel) else
                 XmbStatusIcons.batterySlotKey(batteryLevel, charging = false)
             StatusIcon(
@@ -371,7 +375,7 @@ fun XmbPspStatusStrip(
                     )
                 }
                 Text(
-                    text       = "$batteryLevel%",
+                    text       = battery.level?.let { "$it%" } ?: "—%",
                     color      = if (lowBattery) LowBatteryTint else themedText(StripPrimary),
                     fontSize   = StripFontSize,
                     fontWeight = FontWeight.Medium,
