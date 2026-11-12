@@ -1,0 +1,64 @@
+name: Font preview APK
+
+on:
+  push:
+    branches: [codex/custom-font]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: font-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lite-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          lfs: false
+          persist-credentials: false
+      - name: Set up JVM 17 toolchain
+        id: java17
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up JVM 21 for Gradle
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1
+      - name: Configure JVM 17 discovery
+        run: |
+          mkdir -p "$HOME/.gradle"
+          echo 'org.gradle.java.installations.paths=${{ steps.java17.outputs.path }}' >> "$HOME/.gradle/gradle.properties"
+      - name: Install Android SDK 37
+        run: |
+          set +o pipefail
+          yes | sdkmanager --licenses >/dev/null
+          sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
+      - name: Build side-by-side Lite preview
+        run: ./gradlew :app:assembleLiteDebug --no-daemon --stacktrace
+      - name: Test font import and inheritance
+        run: >-
+          ./gradlew
+          :core:core-data:testDebugUnitTest --tests '*CustomFontImportTest'
+          :core:core-ui:testDebugUnitTest --tests '*CustomFontInheritanceTest'
+          :feature:feature-backup:testDebugUnitTest --tests '*BackupKeyCoverageTest'
+          :feature:feature-settings:testDebugUnitTest --tests '*DisplaySettingsViewModel*Test'
+          --no-daemon --stacktrace
+      - name: Upload APK and test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pfp-font-preview
+          retention-days: 14
+          path: |
+            app/build/outputs/apk/lite/debug/*.apk
+            **/build/test-results/testDebugUnitTest/*.xml
+          if-no-files-found: warn

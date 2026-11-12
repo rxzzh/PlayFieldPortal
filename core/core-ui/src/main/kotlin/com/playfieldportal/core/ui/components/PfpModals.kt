@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -519,7 +521,7 @@ fun PfpTextEntryModal(
                 singleLine = !multiline,
                 // A description scrolls inside two lines when the strip has no room to grow.
                 maxLines = if (!multiline) 1 else if (compact) COMPACT_MULTILINE_MAX_LINES else MULTILINE_MAX_LINES,
-                textStyle = TextStyle(color = themedText(Color.White), fontSize = 16.sp),
+                textStyle = TextStyle(color = themedText(Color.White), fontSize = 16.sp).withPfpFont(),
                 cursorBrush = SolidColor(accent),
                 keyboardOptions = KeyboardOptions(
                     capitalization = if (multiline) KeyboardCapitalization.Sentences else KeyboardCapitalization.Words,

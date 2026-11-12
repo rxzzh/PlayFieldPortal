@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -307,7 +309,7 @@ fun CustomIconsOverlay(
                     ControllerPromptItem(GamepadAction.BACK, "Done"),
                 ),
                 labelColor = themedSubText(Color(0x99B9C6DC)),
-                labelStyle = TextStyle(fontSize = 11.sp),
+                labelStyle = TextStyle(fontSize = 11.sp).withPfpFont(),
                 glyphSize = 15.dp,
                 arrangement = Arrangement.spacedBy(14.dp),
             )
@@ -403,7 +405,7 @@ private fun ColumnCaption(label: IconColumnRun?, active: Boolean, continuesRight
                     style = TextStyle(
                         platformStyle = PlatformTextStyle(includeFontPadding = false),
                         lineHeightStyle = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.Both),
-                    ),
+                    ).withPfpFont(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier

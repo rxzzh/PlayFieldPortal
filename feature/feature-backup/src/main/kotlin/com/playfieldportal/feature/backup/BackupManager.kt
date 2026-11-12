@@ -622,10 +622,13 @@ open class BackupManager @Inject constructor(
             "emulator_profiles",  // user-defined / user-modified emulator profiles
             "custom-icons",       // user's per-slot custom XMB icons (slot-keyed files)
             "ui-media",           // user's menu sounds + boot/GameBoot media (slot-keyed files)
+            "custom_fonts",       // device-imported fonts, referenced by a relative filename
         )
 
     private val BACKED_UP_STRING_KEYS = listOf(
         // Display
+        com.playfieldportal.core.data.repository.CustomFontStore.KEY_FILE,
+        com.playfieldportal.core.data.repository.CustomFontStore.KEY_NAME,
         stringPreferencesKey("display_wave_mode"),
         ThemePrefKeys.WAVE_STYLE,
         stringPreferencesKey("display_icon_style"),

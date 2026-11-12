@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -345,5 +347,5 @@ internal fun KnowledgeBadge(text: String, background: Color) {
 // Same styling as SettingsValueRow's value.
 @Composable
 private fun KnowledgeValueText(text: String) {
-    Text(text = text, color = SettingsText, fontSize = 13.sp, style = TextStyle(shadow = SettingsTextShadow))
+    Text(text = text, color = SettingsText, fontSize = 13.sp, style = TextStyle(shadow = SettingsTextShadow).withPfpFont())
 }

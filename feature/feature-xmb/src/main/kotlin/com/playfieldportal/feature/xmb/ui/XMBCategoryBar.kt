@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -277,7 +279,7 @@ private fun XMBCategoryItem(
             color = themedText(if (isSelected) SelectedIcon else LabelInactive),
             fontSize = if (isSelected) 15.sp else 13.sp,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-            style = if (isSelected) TextStyle(shadow = SelectedLabelShadow) else TextStyle.Default,
+            style = if (isSelected) TextStyle(shadow = SelectedLabelShadow).withPfpFont() else TextStyle.Default.withPfpFont(),
             textAlign = TextAlign.Center,
             maxLines = 1,
             modifier = Modifier

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -583,7 +585,7 @@ private fun BottomBand(
                     ControllerPromptItem(GamepadAction.BACK, "Back"),
                 ),
                 labelColor = SecondaryText.dimmed(0.7f),
-                labelStyle = TextStyle(fontSize = 12.sp),
+                labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                 glyphSize = 16.dp,
                 arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                 modifier = Modifier.alpha(com.playfieldportal.core.ui.components.idleHintAlpha(com.playfieldportal.feature.xmb.ui.LocalMediaHintVisible.current)).fillMaxWidth(),

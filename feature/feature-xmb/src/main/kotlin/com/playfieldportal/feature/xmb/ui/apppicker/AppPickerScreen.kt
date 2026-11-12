@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.apppicker
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -277,7 +279,7 @@ private fun AppPickerHeader(
                 value = searchEdit.fieldValue,
                 onValueChange = searchEdit::onFieldValueChange,
                 singleLine = true,
-                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp),
+                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp).withPfpFont(),
                 cursorBrush = SolidColor(colors.searchBorder),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { onSearchDone() }, onDone = { onSearchDone() }),
@@ -510,7 +512,7 @@ private fun AppPickerFooter(
         TouchPromptBar(
             items = appPickerTouchPrompts(confirmingRemovals),
             labelColor = colors.textSecondary,
-            labelStyle = TextStyle(fontSize = 12.sp),
+            labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
             glyphSize = 16.dp,
             arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
             // Held at one glyph's height so the grid behind the removal panel does not grow when
@@ -541,7 +543,7 @@ private fun AppPickerFooter(
     ControllerPromptBar(
         items = items,
         labelColor = colors.textSecondary,
-        labelStyle = TextStyle(fontSize = 12.sp),
+        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
         glyphSize = 16.dp,
         arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
         // PFP's keyboard brings its own prompts while it is up.

@@ -812,6 +812,12 @@ gradient, cursor and icons all derive from it).
   sounds and clips, and a lock screen image the theme set (one you picked yourself stays).
 - **Display** — *Choose Wallpaper*, *Wave Style*, *Background Motion*, icon and text legibility,
   *Font Colour*, *Item List Motion*, and the *Biblically Accurate PSP XMB* preset.
+- **Custom Font** — *Settings › Interface › Display › Font › Import Font* imports a local OTF or
+  TTF file up to 16 MB. Menus, game titles, dialogs and settings update immediately, and the
+  selection survives an app restart. *Restore Default Font* switches back to the system font.
+  Invalid imports leave the previous font in place; missing or unreadable saved fonts fall back
+  to the system font. Explicit monospace and GameBoot's Inter font stay unchanged. Imported
+  fonts are device-local and are not embedded in shared themes or the APK.
 - **Lock Screen** — *Settings › Interface › Display › Lock Screen* sets the **device** lock screen
   (a still image): *Choose Lock Screen Image* (PNG, JPG, WEBP), *Use Launcher Wallpaper* (a motion
   wallpaper's still frame), and *Reset Lock Screen* back to the device default. The image is

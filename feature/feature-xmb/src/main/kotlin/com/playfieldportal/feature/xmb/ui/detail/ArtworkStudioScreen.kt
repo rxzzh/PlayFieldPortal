@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -956,7 +958,7 @@ internal fun ArtworkStudioContent(
                 // PFP's keyboard brings its own prompts while it is up.
                 modifier = Modifier.padding(top = 6.dp).alpha(if (isVirtualKeyboardOverlayOpen()) 0f else 1f),
                 labelColor = themedSubText(Color.White.copy(alpha = 0.35f)),
-                labelStyle = TextStyle(fontSize = 10.sp),
+                labelStyle = TextStyle(fontSize = 10.sp).withPfpFont(),
                 glyphSize = 14.dp,
                 arrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally),
             )
@@ -1123,7 +1125,7 @@ internal fun ArtworkStudioContent(
                         readOnly = !state.changeMatchEditing,
                         onValueChange = matchEdit::onFieldValueChange,
                         singleLine = true,
-                        textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp),
+                        textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp).withPfpFont(),
                         cursorBrush = SolidColor(accent),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(
@@ -1315,7 +1317,7 @@ internal fun ArtworkStudioContent(
                         value = queryEdit.fieldValue,
                         onValueChange = queryEdit::onFieldValueChange,
                         singleLine = true,
-                        textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp),
+                        textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp).withPfpFont(),
                         cursorBrush = SolidColor(accent),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(

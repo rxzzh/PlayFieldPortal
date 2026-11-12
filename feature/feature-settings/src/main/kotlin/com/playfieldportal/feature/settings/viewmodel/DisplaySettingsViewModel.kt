@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.playfieldportal.core.data.datastore.pfpDataStore
 import com.playfieldportal.core.data.repository.ControllerLayoutRepository
+import com.playfieldportal.core.data.repository.CustomFontStore
 import com.playfieldportal.core.data.repository.GameBootPreferences
 import com.playfieldportal.core.data.repository.ScreenOrientationPreferences
 import com.playfieldportal.core.data.repository.ThemePrefKeys
@@ -150,6 +151,9 @@ private data class Transient(
 )
 
 data class DisplaySettingsUiState(
+    val customFontName: String? = null,
+    val fontImporting: Boolean = false,
+    val fontMessage: String? = null,
     val waveStyle: WaveStyle = WaveStyle.ANIMATED,
     val showBootSequence: Boolean = true,
     val showBootOnResume: Boolean = false,
@@ -221,6 +225,7 @@ class DisplaySettingsViewModel @Inject constructor(
     private val gameBootPreferences: GameBootPreferences,
     private val menuSound: com.playfieldportal.core.ui.sound.MenuSoundPlayer,
     private val controllerLayout: ControllerLayoutRepository,
+    private val customFontStore: CustomFontStore = CustomFontStore(context),
 ) : ViewModel() {
 
     private val _wallpaperMessage  = MutableStateFlow<String?>(null)
@@ -231,11 +236,13 @@ class DisplaySettingsViewModel @Inject constructor(
      * pick that had to be adjusted, cleared by Dismiss or by "Don't warn again".
      */
     private val _textContrastNotice = MutableStateFlow<String?>(null)
+    private val _fontImporting = MutableStateFlow(false)
+    private val _fontMessage = MutableStateFlow<String?>(null)
 
     /** The slot the UI-media picker was launched for, read back when the Uri arrives. */
     private var pendingUiMediaSlot: UiMediaSlot? = null
 
-    val uiState: StateFlow<DisplaySettingsUiState> = combine(
+    private val displayState = combine(
         context.pfpDataStore.data,
         _wallpaperMessage,
         _wallpaperImporting,
@@ -260,6 +267,7 @@ class DisplaySettingsViewModel @Inject constructor(
             fallback = if (slot.kind == UiMediaKind.VIDEO) "Custom video" else "Custom sound",
         )
         DisplaySettingsUiState(
+            customFontName       = customFontStore.selection(prefs)?.displayName,
             waveStyle            = runCatching {
                 WaveStyle.valueOf(prefs[KEY_WAVE_STYLE] ?: WaveStyle.ANIMATED.name)
             }.getOrDefault(WaveStyle.ANIMATED),
@@ -304,7 +312,34 @@ class DisplaySettingsViewModel @Inject constructor(
     }
         // uiMediaStore.assignments() is a directory listing — cheap, but still file IO.
         .flowOn(Dispatchers.IO)
+    val uiState: StateFlow<DisplaySettingsUiState> = combine(
+        displayState, _fontImporting, _fontMessage,
+    ) { state, busy, message -> state.copy(fontImporting = busy, fontMessage = message) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DisplaySettingsUiState())
+
+    fun importFont(uri: Uri) {
+        if (_fontImporting.value) return
+        _fontImporting.value = true
+        viewModelScope.launch {
+            try {
+                customFontStore.importFont(uri)
+            } catch (error: Exception) {
+                if (error is kotlinx.coroutines.CancellationException) throw error
+                Timber.w(error, "Custom font import failed")
+                _fontMessage.value = "Could not import this font. Choose a valid OTF or TTF file under 16 MB. " +
+                    "Your previous font has been kept."
+            } finally {
+                _fontImporting.value = false
+            }
+        }
+    }
+
+    fun resetFont() {
+        if (_fontImporting.value) return
+        viewModelScope.launch { customFontStore.reset() }
+    }
+
+    fun dismissFontMessage() { _fontMessage.value = null }
 
     // ── Boot / GameBoot media ─────────────────────────────────────────────────
 

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -276,7 +278,7 @@ private fun NameSearchBar(
                 onValueChange = queryEdit::onFieldValueChange,
                 readOnly = !ui.editingQuery,
                 singleLine = true,
-                textStyle = TextStyle(color = themedText(TextPrimary), fontSize = 14.sp),
+                textStyle = TextStyle(color = themedText(TextPrimary), fontSize = 14.sp).withPfpFont(),
                 cursorBrush = SolidColor(focusEdge),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { onSearch() }, onDone = { onSearch() }),

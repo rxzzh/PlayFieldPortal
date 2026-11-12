@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.photo
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -223,7 +225,7 @@ fun PhotoViewerScreen(
                             TouchPromptItem(TouchGesture.TAP, "Hide Controls"),
                         ),
                         labelColor = themedSubText(TextMuted),
-                        labelStyle = TextStyle(fontSize = 12.sp),
+                        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                         glyphSize = 16.dp,
                         arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                     )
@@ -239,7 +241,7 @@ fun PhotoViewerScreen(
                             ControllerPromptItem(GamepadAction.BACK, "Back"),
                         ),
                         labelColor = themedSubText(TextMuted),
-                        labelStyle = TextStyle(fontSize = 12.sp),
+                        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                         glyphSize = 16.dp,
                         arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                         // Idles in and blinks out like the crossbar pill (see shouldShowMediaHint).
@@ -328,7 +330,7 @@ fun PhotoViewerScreen(
                         TouchPromptItem(TouchGesture.TAP, "Show Controls"),
                     ),
                     labelColor = themedSubText(TextMuted),
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                 )
@@ -371,7 +373,7 @@ internal fun WallpaperPreviewActions(
                 ControllerPromptItem(GamepadAction.BACK, "Cancel"),
             ),
             labelColor = themedSubText(TextMuted),
-            labelStyle = TextStyle(fontSize = 12.sp),
+            labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
             glyphSize = 16.dp,
             arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
         )

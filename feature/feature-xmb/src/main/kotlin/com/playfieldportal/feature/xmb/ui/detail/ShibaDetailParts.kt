@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -172,7 +174,7 @@ internal fun SearchRow(
                     onValueChange = searchEdit::onFieldValueChange,
                     readOnly = !editing,
                     singleLine = true,
-                    textStyle = TextStyle(color = palette.textPrimary, fontSize = 15.sp),
+                    textStyle = TextStyle(color = palette.textPrimary, fontSize = 15.sp).withPfpFont(),
                     cursorBrush = SolidColor(palette.focus),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = { onEditEnded() }, onDone = { onEditEnded() }),

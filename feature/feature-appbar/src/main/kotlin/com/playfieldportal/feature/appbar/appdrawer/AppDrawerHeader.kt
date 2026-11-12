@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.appbar.appdrawer
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -118,7 +120,7 @@ internal fun AppDrawerHeader(
                     if (searchEdit != null) searchEdit.onFieldValueChange(next) else onSearchChange(next.text)
                 },
                 singleLine = true,
-                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp),
+                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp).withPfpFont(),
                 cursorBrush = SolidColor(colors.searchBorder),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { onSearchDone() }, onDone = { onSearchDone() }),

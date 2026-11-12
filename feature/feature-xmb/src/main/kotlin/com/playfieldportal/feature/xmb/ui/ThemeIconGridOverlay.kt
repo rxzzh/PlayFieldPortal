@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -207,7 +209,7 @@ fun ThemeIconGridOverlay(
                 TouchPromptBar(
                     items = listOf(TouchPromptItem(TouchGesture.TAP, "Use this icon")),
                     labelColor = textColors.secondary,
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     modifier = Modifier.fillMaxWidth().padding(top = 10.dp).testTag(ThemeIconGridTags.TOUCH_PROMPTS),
                 )
@@ -218,7 +220,7 @@ fun ThemeIconGridOverlay(
                         ControllerPromptItem(GamepadAction.BACK, "Back"),
                     ),
                     labelColor = textColors.secondary,
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     modifier = Modifier.fillMaxWidth().padding(top = 10.dp).testTag(ThemeIconGridTags.PROMPTS),
                 )

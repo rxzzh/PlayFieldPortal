@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
@@ -64,7 +66,7 @@ fun ControllerPrompt(
     modifier: Modifier = Modifier,
     style: ControllerPromptStyle = LocalControllerPromptStyle.current,
     labelColor: Color = Color.White.copy(alpha = 0.75f),
-    labelStyle: TextStyle = TextStyle.Default,
+    labelStyle: TextStyle = TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     spacing: Dp = 4.dp,
 ) {
@@ -97,7 +99,7 @@ fun ControllerPrompt(
     modifier: Modifier = Modifier,
     style: ControllerPromptStyle = LocalControllerPromptStyle.current,
     labelColor: Color = Color.White.copy(alpha = 0.75f),
-    labelStyle: TextStyle = TextStyle.Default,
+    labelStyle: TextStyle = TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     spacing: Dp = 4.dp,
     /** Gap between the glyphs themselves — tighter than [spacing], so a pair reads as one unit. */
@@ -137,7 +139,7 @@ fun ControllerPromptGlyphs(
     modifier: Modifier = Modifier,
     family: ControllerDisplayType = LocalControllerPromptStyle.current.family,
     labelColor: Color = Color.White.copy(alpha = 0.75f),
-    labelStyle: TextStyle = TextStyle.Default,
+    labelStyle: TextStyle = TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     spacing: Dp = 4.dp,
     glyphSpacing: Dp = 2.dp,
@@ -202,7 +204,7 @@ fun ControllerPromptBar(
     modifier: Modifier = Modifier,
     style: ControllerPromptStyle = LocalControllerPromptStyle.current,
     labelColor: Color = Color.White.copy(alpha = 0.75f),
-    labelStyle: TextStyle = TextStyle.Default,
+    labelStyle: TextStyle = TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     arrangement: Arrangement.Horizontal = Arrangement.spacedBy(28.dp, Alignment.CenterHorizontally),
 ) {

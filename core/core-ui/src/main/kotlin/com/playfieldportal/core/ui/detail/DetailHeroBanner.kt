@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -105,7 +107,7 @@ fun PfpDetailHeroBanner(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = TextStyle(shadow = DetailTextShadow),
+                style = TextStyle(shadow = DetailTextShadow).withPfpFont(),
             )
             Spacer(Modifier.height(2.dp))
             Text(
@@ -114,7 +116,7 @@ fun PfpDetailHeroBanner(
                 fontSize = 15.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = TextStyle(shadow = DetailTextShadow),
+                style = TextStyle(shadow = DetailTextShadow).withPfpFont(),
             )
             if (facts.isNotEmpty()) {
                 Spacer(Modifier.height(6.dp))
@@ -124,7 +126,7 @@ fun PfpDetailHeroBanner(
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(shadow = DetailTextShadow),
+                    style = TextStyle(shadow = DetailTextShadow).withPfpFont(),
                 )
             }
         }

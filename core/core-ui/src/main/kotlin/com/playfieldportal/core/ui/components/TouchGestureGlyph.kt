@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +53,7 @@ fun TouchPromptBar(
     items: List<TouchPromptItem>,
     modifier: Modifier = Modifier,
     labelColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f),
-    labelStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default,
+    labelStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     arrangement: Arrangement.Horizontal = Arrangement.spacedBy(28.dp, androidx.compose.ui.Alignment.CenterHorizontally),
 ) {
@@ -75,7 +77,7 @@ internal fun <T> PromptRow(
     label: String,
     modifier: Modifier = Modifier,
     labelColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f),
-    labelStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default,
+    labelStyle: androidx.compose.ui.text.TextStyle = androidx.compose.ui.text.TextStyle.Default.withPfpFont(),
     glyphSize: Dp = 22.dp,
     spacing: Dp = 4.dp,
     glyphSpacing: Dp = 2.dp,

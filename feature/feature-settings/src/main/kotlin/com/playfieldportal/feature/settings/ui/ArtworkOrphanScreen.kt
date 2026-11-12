@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
@@ -110,7 +112,7 @@ private fun OrphanResolver(
                 value = state.query,
                 onValueChange = viewModel::onQueryChange,
                 singleLine = true,
-                textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp),
+                textStyle = TextStyle(color = themedText(Color.White), fontSize = 15.sp).withPfpFont(),
                 cursorBrush = androidx.compose.ui.graphics.SolidColor(Color.White),
                 // The keyboard's Search key is the same explicit press as the row below — it is
                 // not typing that triggers a search, it is asking for one.

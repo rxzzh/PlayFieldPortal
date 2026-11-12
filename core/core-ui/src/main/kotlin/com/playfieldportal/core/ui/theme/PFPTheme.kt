@@ -2,6 +2,7 @@ package com.playfieldportal.core.ui.theme
 
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -9,6 +10,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 
 /** [PFPColors.textOr] against the active theme. */
 @Composable
@@ -65,6 +67,7 @@ private val PfpDarkColorScheme = darkColorScheme(
 @Composable
 fun PFPTheme(
     colors: PFPColors = DefaultPFPColors,
+    fontFamily: FontFamily? = LocalPfpFontFamily.current,
     content: @Composable () -> Unit,
 ) {
     // The theme's text roles, resolved once per theme change. Today [colors.textPrimary] is white
@@ -82,13 +85,15 @@ fun PFPTheme(
         pfpTextColorsFor(colors)
     }
 
+    val typography = remember(fontFamily) { Typography().withPfpFont(fontFamily) }
     CompositionLocalProvider(
+        LocalPfpFontFamily provides fontFamily,
         LocalPFPColors provides colors,
         LocalPfpTextColors provides textColors,
         // Every Text() that does not pass an explicit color= reads LocalContentColor, so providing
         // it here is the one line that reaches the long tail of call sites without touching them.
         LocalContentColor provides textColors.primary,
     ) {
-        MaterialTheme(colorScheme = PfpDarkColorScheme, content = content)
+        MaterialTheme(colorScheme = PfpDarkColorScheme, typography = typography, content = content)
     }
 }

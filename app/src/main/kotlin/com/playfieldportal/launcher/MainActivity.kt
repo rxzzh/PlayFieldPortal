@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontFamily
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -57,6 +58,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var customFontStore: com.playfieldportal.core.data.repository.CustomFontStore
 
     @Inject
     lateinit var gamepadInputHandler: GamepadInputHandler
@@ -198,7 +202,9 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            PFPTheme {
+            val loadedFont by customFontStore.loadedFont.collectAsState(initial = null)
+            val fontFamily = remember(loadedFont) { loadedFont?.let { FontFamily(it.typeface) } }
+            PFPTheme(fontFamily = fontFamily) {
                 // Menu sounds are ambient for the same reason controller prompts are: the layers
                 // that need them are composables, not ViewModels. Remembered so the static local
                 // is written once — a fresh lambda per recomposition would invalidate the subtree.

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,7 +61,7 @@ fun MediaAssignmentRow(
                 text = value,
                 color = SettingsAccent,
                 fontSize = 13.sp,
-                style = TextStyle(shadow = SettingsTextShadow),
+                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
             )
         },
         actions = buildList {

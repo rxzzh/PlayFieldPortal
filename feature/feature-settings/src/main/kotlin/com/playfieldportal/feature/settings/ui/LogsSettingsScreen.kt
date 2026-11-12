@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import com.playfieldportal.core.ui.components.PfpModalSpec
 import android.content.Context
 import android.content.Intent
@@ -273,7 +275,7 @@ private fun LogsValueText(text: String) {
         text = text,
         color = SettingsText,
         fontSize = 13.sp,
-        style = TextStyle(shadow = SettingsTextShadow),
+        style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
     )
 }
 

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -135,7 +137,7 @@ internal fun StudioAssetManagerPanel(
                     ),
                     glyphSize = 16.dp,
                     labelColor = themedSubText(Color.White.copy(alpha = 0.7f)),
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     arrangement = Arrangement.spacedBy(20.dp),
                 )
             }
@@ -155,7 +157,7 @@ internal fun StudioAssetManagerPanel(
                     label = "Close",
                     glyphSize = 16.dp,
                     labelColor = themedText(Color.White.copy(alpha = 0.7f)),
-                    labelStyle = TextStyle(fontSize = 13.sp),
+                    labelStyle = TextStyle(fontSize = 13.sp).withPfpFont(),
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White.copy(alpha = 0.08f))

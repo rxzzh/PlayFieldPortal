@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
@@ -67,7 +69,7 @@ fun ControllerHintBar(
                 offset = Offset(0f, 2f),
                 blurRadius = 4f,
             ),
-        ),
+        ).withPfpFont(),
         glyphSize = if (compact) 15.dp else 20.dp,
         arrangement = arrangement,
     )

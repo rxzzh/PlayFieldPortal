@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -138,7 +140,7 @@ fun PspContextMenuOverlay(
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Light,
                 color = themedText(Color.White.copy(alpha = 0.92f)),
-                style = TextStyle(shadow = menuTextShadowFor(themedText(Color.White.copy(alpha = 0.92f)))),
+                style = TextStyle(shadow = menuTextShadowFor(themedText(Color.White.copy(alpha = 0.92f)))).withPfpFont(),
                 maxLines = 2,
                 modifier = Modifier.padding(bottom = 10.dp),
             )
@@ -204,7 +206,7 @@ private fun PspContextMenuRow(
                 fontSize = if (isSelected) 16.sp else 15.sp,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                 color = labelColor,
-                style = TextStyle(shadow = menuTextShadowFor(labelColor)),
+                style = TextStyle(shadow = menuTextShadowFor(labelColor)).withPfpFont(),
                 // A value fills the row so it can be pushed to the far edge; without one the label
                 // keeps hugging its text, which is what puts a checkmark right beside the words
                 // instead of stranding it across the panel.
@@ -220,7 +222,7 @@ private fun PspContextMenuRow(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Normal,
                     color = subColor,
-                    style = TextStyle(shadow = menuTextShadowFor(subColor)),
+                    style = TextStyle(shadow = menuTextShadowFor(subColor)).withPfpFont(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -237,7 +239,7 @@ private fun PspContextMenuRow(
                     text = "›",
                     fontSize = 17.sp,
                     color = subColor,
-                    style = TextStyle(shadow = menuTextShadowFor(subColor)),
+                    style = TextStyle(shadow = menuTextShadowFor(subColor)).withPfpFont(),
                 )
             }
         }
@@ -262,7 +264,7 @@ private fun PspContextMenuGroupHeader(label: String, first: Boolean) {
             text = label,
             fontSize = 11.sp,
             color = color,
-            style = TextStyle(shadow = menuTextShadowFor(color)),
+            style = TextStyle(shadow = menuTextShadowFor(color)).withPfpFont(),
             modifier = Modifier.padding(top = if (first) 0.dp else 8.dp),
         )
     }

@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -236,7 +238,7 @@ fun HsvColorPickerDialog(
                             value = edit.fieldValue,
                             onValueChange = { edit.onFieldValueChange(it) },
                             singleLine = true,
-                            textStyle = TextStyle(color = themedText(Color.White), fontSize = 16.sp, fontFamily = FontFamily.Monospace),
+                            textStyle = TextStyle(color = themedText(Color.White), fontSize = 16.sp, fontFamily = FontFamily.Monospace).withPfpFont(),
                             cursorBrush = SolidColor(accent),
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Characters,

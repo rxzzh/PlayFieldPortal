@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -307,7 +309,7 @@ fun VideoDetailScreen(
                         ControllerPromptItem(GamepadAction.BACK, "Back"),
                     ),
                     labelColor = themedSubText(TextMuted),
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                     modifier = Modifier.alpha(com.playfieldportal.core.ui.components.idleHintAlpha(com.playfieldportal.feature.xmb.ui.LocalMediaHintVisible.current)).padding(horizontal = 24.dp),

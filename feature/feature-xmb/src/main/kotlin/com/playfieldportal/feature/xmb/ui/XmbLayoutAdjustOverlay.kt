@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -124,7 +126,7 @@ fun XmbLayoutAdjustOverlay(
                     ControllerPromptItem(GamepadAction.BACK, "Cancel"),
                 ),
                 labelColor = themedSubText(Color(0x99B9C6DC)),
-                labelStyle = TextStyle(fontSize = 11.sp),
+                labelStyle = TextStyle(fontSize = 11.sp).withPfpFont(),
                 glyphSize = 15.dp,
                 arrangement = Arrangement.spacedBy(14.dp),
                 modifier = Modifier.testTag(XmbLayoutAdjustTags.PROMPTS),

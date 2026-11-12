@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import com.playfieldportal.core.ui.components.PfpModalSpec
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -72,6 +74,9 @@ fun DisplaySettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val lockState by lockScreenViewModel.uiState.collectAsState()
+    val fontFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let(viewModel::importFont)
+    }
 
     // Font-colour picker state. Held here rather than in the ViewModel for the same reason the
     // Themes screen holds its icon picker locally: nothing is persisted until Apply.
@@ -172,6 +177,12 @@ fun DisplaySettingsScreen(
                 openOnCancel = true,
                 onConfirm = { viewModel.applyPspLayout(); pspConfirmOpen = false },
                 onCancel = { pspConfirmOpen = false },
+            )
+            state.fontMessage != null -> PfpModalSpec.Notice(
+                key = "font:${state.fontMessage}",
+                title = "Custom Font",
+                message = state.fontMessage.orEmpty(),
+                onDismiss = viewModel::dismissFontMessage,
             )
             wallpaperMessage != null -> PfpModalSpec.Notice(
                 key = "wallpaper:$wallpaperMessage",
@@ -394,6 +405,27 @@ fun DisplaySettingsScreen(
                 onClick  = { viewModel.cycleUmdSlotMode() },
             )
 
+            SettingsGroup("Font")
+            SettingsValueRow(
+                label = "Import Font",
+                sublabel = "OTF or TTF, up to 16 MB. Applies to menus, titles and settings",
+                value = if (state.fontImporting) "Importing…" else state.customFontName ?: "System Default",
+                onClick = if (state.fontImporting) null else ({ fontFilePicker.launch(arrayOf("*/*")) }),
+            )
+            Text(
+                text = "Aa Bb 0123456789 · 游戏 音乐 照片",
+                color = SettingsText,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(horizontal = 48.dp, vertical = 12.dp),
+            )
+            if (state.customFontName != null) {
+                SettingsRow(
+                    label = "Restore Default Font",
+                    sublabel = "Use the system typeface again",
+                    onClick = if (state.fontImporting) null else viewModel::resetFont,
+                )
+            }
+
             // ── Font Colour ──────────────────────────────────────────────────
             // Deliberately next to Text Shadow: the two answer the same question (how does text
             // survive the wallpaper), and AUTO reads the shadow toggle as "may I use a shadow?".
@@ -462,7 +494,7 @@ fun DisplaySettingsScreen(
                 fontSize = 12.sp,
                 // Same helper-text shadow as the row family — this paragraph sits directly
                 // over the translucent backdrop too.
-                style    = androidx.compose.ui.text.TextStyle(shadow = SettingsTextShadow),
+                style    = androidx.compose.ui.text.TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                 modifier = Modifier.padding(horizontal = 48.dp, vertical = 4.dp),
             )
 

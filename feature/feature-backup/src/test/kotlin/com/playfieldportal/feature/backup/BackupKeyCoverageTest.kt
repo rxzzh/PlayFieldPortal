@@ -15,6 +15,11 @@ import org.junit.Test
  */
 class BackupKeyCoverageTest {
 
+    @Test
+    fun `custom font selection travels with the bundled font directory`() {
+        assertCovered("display_custom_font_file", "display_custom_font_name")
+    }
+
     private val covered = BackupManager.BACKED_UP_KEY_NAMES
 
     private fun assertCovered(vararg keys: String) {

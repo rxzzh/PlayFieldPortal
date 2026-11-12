@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -902,7 +904,7 @@ fun SettingsScaffold(
                             text = "◀",
                             color = SettingsSubtext,
                             fontSize = 18.sp,
-                            style = TextStyle(shadow = SettingsTextShadow),
+                            style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                             modifier = Modifier.padding(end = 20.dp),
                         )
                         Column {
@@ -912,14 +914,14 @@ fun SettingsScaffold(
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 2.sp,
-                                style = TextStyle(shadow = SettingsTextShadow),
+                                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                             )
                             Text(
                                 text = subtitle,
                                 color = SettingsText,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Light,
-                                style = TextStyle(shadow = SettingsTextShadow),
+                                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                             )
                         }
                     }
@@ -1057,7 +1059,7 @@ fun SettingsGroup(title: String) {
         fontSize = 15.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = 1.8.sp,
-        style = TextStyle(shadow = SettingsTextShadow),
+        style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
     )
 }
 
@@ -1204,7 +1206,7 @@ fun SettingsRow(
                     color = (if (isFocused && cursorVisible && !(hideRowHighlightOnActionFocus && anyActionFocused)) Color.White else SettingsText)
                         .let { if (enabled) it else it.copy(alpha = it.alpha * DISABLED_ROW_ALPHA) },
                     fontSize = 15.sp,
-                    style = TextStyle(shadow = SettingsTextShadow),
+                    style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                 )
                 if (labelTrailing != null) {
                     Spacer(Modifier.width(8.dp))
@@ -1220,7 +1222,7 @@ fun SettingsRow(
                     // The helper line is the least legible text on screen over a bright
                     // wallpaper — small, gray, and lowest in the row. The shadow is what keeps
                     // it readable without a heavier scrim.
-                    style = TextStyle(shadow = SettingsTextShadow),
+                    style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                 )
             }
         }
@@ -1368,7 +1370,7 @@ fun SettingsValueRow(
                 text = value,
                 color = SettingsText,
                 fontSize = 13.sp,
-                style = TextStyle(shadow = SettingsTextShadow),
+                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
             )
         },
     )
@@ -1503,7 +1505,7 @@ fun SettingsTextFieldRow(
             text = label,
             color = SettingsSubtext,
             fontSize = 12.sp,
-            style = TextStyle(shadow = SettingsTextShadow),
+            style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Box(
@@ -1587,14 +1589,14 @@ fun SettingsTextFieldRow(
                         text = helper,
                         color = SettingsSubtext.dimmed(0.6f),
                         fontSize = 11.sp,
-                        style = TextStyle(shadow = SettingsTextShadow),
+                        style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                     )
                 }
                 if (helperPrompt != null && showPrompt) {
                     ControllerPromptBar(
                         items = listOf(helperPrompt),
                         labelColor = SettingsSubtext.dimmed(0.6f),
-                        labelStyle = TextStyle(fontSize = 11.sp),
+                        labelStyle = TextStyle(fontSize = 11.sp).withPfpFont(),
                         glyphSize = 14.dp,
                     )
                 }

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -186,7 +188,7 @@ fun GamePickerScreen(
     ) {
         // Every label reads like the Launcher's: the XMB's directional drop shadow, when the user
         // keeps Text Shadow on and the storefront text is light (a dark-on-light theme gets none).
-        ProvideTextStyle(LocalTextStyle.current.merge(TextStyle(shadow = pickerTextShadow(sf, textShadow)))) {
+        ProvideTextStyle(LocalTextStyle.current.merge(TextStyle(shadow = pickerTextShadow(sf, textShadow)).withPfpFont())) {
         Column(Modifier.fillMaxSize()) {
             PickerHeader(
                 state,
@@ -791,7 +793,7 @@ private fun ShelfSearchField(
                 value = searchEdit.fieldValue,
                 onValueChange = searchEdit::onFieldValueChange,
                 singleLine = true,
-                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp),
+                textStyle = TextStyle(color = colors.textPrimary, fontSize = 14.sp).withPfpFont(),
                 cursorBrush = SolidColor(colors.searchBorder),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 decorationBox = { inner ->
@@ -830,7 +832,7 @@ private fun PickerFooter(
         TouchPromptBar(
             items = gamePickerTouchPrompts(),
             labelColor = colors.textSecondary,
-            labelStyle = LocalTextStyle.current.merge(TextStyle(fontSize = 12.sp)),
+            labelStyle = LocalTextStyle.current.merge(TextStyle(fontSize = 12.sp).withPfpFont()),
             glyphSize = 16.dp,
             arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
             modifier = modifier,
@@ -864,7 +866,7 @@ private fun PickerFooter(
     ControllerPromptBar(
         items = items,
         labelColor = colors.textSecondary,
-        labelStyle = LocalTextStyle.current.merge(TextStyle(fontSize = 12.sp)),
+        labelStyle = LocalTextStyle.current.merge(TextStyle(fontSize = 12.sp).withPfpFont()),
         glyphSize = 16.dp,
         arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
         modifier = modifier,

@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -93,7 +95,7 @@ fun ColorSchemePickerOverlay(
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Light,
                 color = themedText(Color.White.copy(alpha = 0.92f)),
-                style = TextStyle(shadow = PickerTextShadow),
+                style = TextStyle(shadow = PickerTextShadow).withPfpFont(),
                 modifier = Modifier.padding(bottom = 10.dp),
             )
             Box(
@@ -155,13 +157,13 @@ private fun ColorSchemeRow(
                     fontSize = if (isSelected) 16.sp else 15.sp,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                     color = themedText(if (isSelected) Color.White else Color.White.copy(alpha = 0.66f)),
-                    style = TextStyle(shadow = PickerTextShadow),
+                    style = TextStyle(shadow = PickerTextShadow).withPfpFont(),
                 )
                 Text(
                     text = option.sublabel,
                     fontSize = 11.sp,
                     color = themedSubText(Color.White.copy(alpha = if (isSelected) 0.78f else 0.5f)),
-                    style = TextStyle(shadow = PickerTextShadow),
+                    style = TextStyle(shadow = PickerTextShadow).withPfpFont(),
                 )
             }
         }

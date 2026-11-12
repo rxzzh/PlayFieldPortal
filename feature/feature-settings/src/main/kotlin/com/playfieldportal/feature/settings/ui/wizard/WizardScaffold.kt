@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui.wizard
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -258,7 +260,7 @@ private fun WizardFooter(backEnabled: Boolean, showSkip: Boolean, confirmLabel: 
                 action = GamepadAction.SELECT,
                 label = confirmLabel,
                 labelColor = WizardEnterBlue,
-                labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold).withPfpFont(),
                 glyphSize = 16.dp,
                 spacing = 5.dp,
             )
@@ -266,7 +268,7 @@ private fun WizardFooter(backEnabled: Boolean, showSkip: Boolean, confirmLabel: 
                 action = GamepadAction.BACK,
                 label = "Back",
                 labelColor = WizardBackRed.copy(alpha = if (backEnabled) 1f else 0.35f),
-                labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold).withPfpFont(),
                 glyphSize = 16.dp,
                 spacing = 5.dp,
                 modifier = Modifier.alpha(if (backEnabled) 1f else 0.4f),
@@ -276,7 +278,7 @@ private fun WizardFooter(backEnabled: Boolean, showSkip: Boolean, confirmLabel: 
                     action = GamepadAction.NEXT_CATEGORY,
                     label = "Skip",
                     labelColor = themedSubText(Color.White.copy(alpha = 0.88f)),
-                    labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                    labelStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold).withPfpFont(),
                     glyphSize = 16.dp,
                     spacing = 5.dp,
                 )

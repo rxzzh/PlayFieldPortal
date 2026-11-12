@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
@@ -802,7 +804,7 @@ private fun XmbVerticalListRow(
     // Shadow for row helper text: the subtitle is the only label with no separation treatment
     // (the title brightens + shadows when selected), so it's the text that washes out over the
     // bright half of a wallpaper. Same directional shadow idiom as PspContextMenu/ControllerHintBar.
-    val subtitleStyle = if (textShadow) TextStyle(shadow = XmbTextShadow) else TextStyle.Default
+    val subtitleStyle = if (textShadow) TextStyle(shadow = XmbTextShadow).withPfpFont() else TextStyle.Default.withPfpFont()
 
     // Pivot the grow/shrink scale at the leading icon's centre (not the row centre) so the icon
     // never drifts horizontally as it scales — every row's icon stays on the caticon's vertical line.
@@ -898,7 +900,7 @@ private fun XmbVerticalListRow(
                             fontSize = if (isSelected) XmbLayoutSpec.DEFAULT.itemTextSelectedSp.sp
                             else XmbLayoutSpec.DEFAULT.itemTextSp.sp,
                             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                            style = if (isSelected) TextStyle(shadow = SelectedTextShadow) else TextStyle.Default,
+                            style = if (isSelected) TextStyle(shadow = SelectedTextShadow).withPfpFont() else TextStyle.Default.withPfpFont(),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f, fill = false),
@@ -955,7 +957,7 @@ private fun XmbVerticalListRow(
                                     labelColor = themedSubText(SecondaryText),
                                     labelStyle = TextStyle(
                                         fontSize = if (isSelected) 12.sp else 11.sp,
-                                    ),
+                                    ).withPfpFont(),
                                     glyphSize = 14.dp,
                                 )
                             }

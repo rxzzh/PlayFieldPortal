@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -156,7 +158,7 @@ private fun GameListRow(
                 text = if (row.busy) "Working…" else labelValueText(row),
                 color = SettingsText,
                 fontSize = 13.sp,
-                style = TextStyle(shadow = SettingsTextShadow),
+                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
             )
         },
         onClick = {

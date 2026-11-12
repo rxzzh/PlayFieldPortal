@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -179,7 +181,7 @@ fun MusicTrackPicker(
                     TouchPromptBar(
                         items = listOf(TouchPromptItem(TouchGesture.TAP, "Toggle")),
                         labelColor = PickerSubtext,
-                        labelStyle = TextStyle(fontSize = 12.sp),
+                        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                         glyphSize = 16.dp,
                         arrangement = Arrangement.spacedBy(18.dp),
                     )
@@ -191,7 +193,7 @@ fun MusicTrackPicker(
                             ControllerPromptItem(GamepadAction.BACK, "Cancel"),
                         ),
                         labelColor = PickerSubtext,
-                        labelStyle = TextStyle(fontSize = 12.sp),
+                        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                         glyphSize = 16.dp,
                         arrangement = Arrangement.spacedBy(18.dp),
                         // Idles in and blinks out like the crossbar pill (see shouldShowMediaHint).

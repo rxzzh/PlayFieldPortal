@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui.detail
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -171,7 +173,7 @@ private fun StudioPickStatus(
                     label = "Apply",
                     glyphSize = 12.dp,
                     labelColor = themedSubText(Color.White.copy(alpha = 0.6f)),
-                    labelStyle = TextStyle(fontSize = 9.5.sp, lineHeight = 12.sp),
+                    labelStyle = TextStyle(fontSize = 9.5.sp, lineHeight = 12.sp).withPfpFont(),
                     modifier = Modifier.clip(RoundedCornerShape(4.dp)).clickable(onClick = onApply),
                 )
             }
@@ -219,7 +221,7 @@ internal fun StudioOptionsControl(
             label = "Options",
             glyphSize = 13.dp,
             labelColor = themedSubText(Color.White.copy(alpha = 0.6f)),
-            labelStyle = TextStyle(fontSize = 9.5.sp),
+            labelStyle = TextStyle(fontSize = 9.5.sp).withPfpFont(),
             modifier = modifier
                 .clip(RoundedCornerShape(6.dp))
                 .clickable(onClick = onClick)

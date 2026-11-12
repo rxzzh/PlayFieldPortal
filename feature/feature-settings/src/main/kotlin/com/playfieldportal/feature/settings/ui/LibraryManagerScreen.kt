@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import com.playfieldportal.core.data.repository.Xbox360Emulator
 import com.playfieldportal.core.ui.components.PfpModalSpec
 import android.net.Uri
@@ -967,7 +969,7 @@ private fun ImportPcGamesContent(
                                 text = "◀  ${app.value}  ▶",
                                 color = SettingsText,
                                 fontSize = 13.sp,
-                                style = TextStyle(shadow = SettingsTextShadow),
+                                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                             )
                         },
                         onClick  = { onCycleUnknownLauncher(app.packageName) },

@@ -1,5 +1,7 @@
 package com.playfieldportal.core.ui.components
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,7 +86,7 @@ fun XmbBackTouchButton(
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                style = TextStyle(shadow = XmbGlyphShadow),
+                style = TextStyle(shadow = XmbGlyphShadow).withPfpFont(),
             )
         }
     }
@@ -156,7 +158,7 @@ fun XmbHeaderPill(
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                style = TextStyle(shadow = XmbGlyphShadow),
+                style = TextStyle(shadow = XmbGlyphShadow).withPfpFont(),
             )
             Spacer(Modifier.width(6.dp))
         }
@@ -165,7 +167,7 @@ fun XmbHeaderPill(
             color = Color.White,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
-            style = TextStyle(shadow = XmbGlyphShadow),
+            style = TextStyle(shadow = XmbGlyphShadow).withPfpFont(),
         )
     }
 }
@@ -196,7 +198,7 @@ fun XmbTouchPill(
             color = Color.White,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
-            style = TextStyle(shadow = XmbGlyphShadow),
+            style = TextStyle(shadow = XmbGlyphShadow).withPfpFont(),
         )
     }
 }

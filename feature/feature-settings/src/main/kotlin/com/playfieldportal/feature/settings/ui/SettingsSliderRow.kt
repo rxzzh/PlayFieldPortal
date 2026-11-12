@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.settings.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -148,7 +150,7 @@ fun SettingsSliderRow(
                     text = label,
                     color = if (isFocused && cursorVisible) Color.White else SettingsText,
                     fontSize = 15.sp,
-                    style = TextStyle(shadow = SettingsTextShadow),
+                    style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                 )
                 if (!sublabel.isNullOrBlank()) {
                     Spacer(Modifier.height(2.dp))
@@ -158,7 +160,7 @@ fun SettingsSliderRow(
                         fontSize = 12.sp,
                         // Same helper-line shadow as SettingsRow — the slider sublabels are
                         // equally washed out over a bright wallpaper.
-                        style = TextStyle(shadow = SettingsTextShadow),
+                        style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
                     )
                 }
             }
@@ -167,7 +169,7 @@ fun SettingsSliderRow(
                 text = valueFormatter(value),
                 color = if (adjusting) adjustAccent else SettingsSubtext,
                 fontSize = 13.sp,
-                style = TextStyle(shadow = SettingsTextShadow),
+                style = TextStyle(shadow = SettingsTextShadow).withPfpFont(),
             )
         }
         Spacer(Modifier.height(8.dp))

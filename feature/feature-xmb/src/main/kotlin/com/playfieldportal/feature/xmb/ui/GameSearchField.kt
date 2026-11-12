@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -197,7 +199,7 @@ fun GameSearchField(
                         if (next.text != currentText) onTextChange(next.text)
                     },
                     singleLine = true,
-                    textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
+                    textStyle = TextStyle(color = Color.White, fontSize = 16.sp).withPfpFont(),
                     cursorBrush = SolidColor(Color.White),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(

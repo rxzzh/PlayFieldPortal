@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.ui
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -332,7 +334,7 @@ fun MusicBrowserScreen(
                         TouchPromptItem(TouchGesture.LONG_PRESS, "Options"),
                     ),
                     labelColor = SecondaryText.dimmed(0.7f),
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                 )
@@ -351,7 +353,7 @@ fun MusicBrowserScreen(
                         ControllerPromptItem(GamepadAction.BACK, "Back"),
                     ),
                     labelColor = SecondaryText.dimmed(0.7f),
-                    labelStyle = TextStyle(fontSize = 12.sp),
+                    labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                     glyphSize = 16.dp,
                     arrangement = Arrangement.spacedBy(18.dp, Alignment.CenterHorizontally),
                     // Idles in and blinks out like the crossbar pill (see shouldShowMediaHint), and

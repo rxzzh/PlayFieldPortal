@@ -1,5 +1,7 @@
 package com.playfieldportal.feature.xmb.video
 
+import com.playfieldportal.core.ui.theme.withPfpFont
+
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -384,7 +386,7 @@ internal fun VideoErrorBackPrompt(showTouchControls: Boolean, onBack: () -> Unit
             actions = listOf(GamepadAction.SELECT, GamepadAction.BACK),
             label = "Go back",
             labelColor = Color(0xFFB0B0B0),
-            labelStyle = TextStyle(fontSize = 13.sp),
+            labelStyle = TextStyle(fontSize = 13.sp).withPfpFont(),
             glyphSize = 18.dp,
         )
     }
@@ -534,7 +536,7 @@ private fun ControlsOverlay(
                     ControllerPromptBar(
                         items = videoPlayerPromptItems(isPlaying, hasPrevNext = hasPrev || hasNext),
                         labelColor = Color(0xFFCCCCCC),
-                        labelStyle = TextStyle(fontSize = 12.sp),
+                        labelStyle = TextStyle(fontSize = 12.sp).withPfpFont(),
                         glyphSize = 16.dp,
                         arrangement = Arrangement.spacedBy(18.dp),
                         // Idles in and blinks out like the crossbar pill (see shouldShowMediaHint).
