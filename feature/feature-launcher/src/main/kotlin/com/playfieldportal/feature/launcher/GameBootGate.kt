@@ -1,6 +1,7 @@
 package com.playfieldportal.feature.launcher
 
 import android.content.Context
+import com.playfieldportal.core.domain.presentation.LaunchPresentation
 import com.playfieldportal.core.data.repository.GameBootPreferences
 import com.playfieldportal.core.data.repository.UiMediaStore
 import com.playfieldportal.core.domain.model.UiMediaSlot
@@ -60,7 +61,7 @@ class GameBootGate @Inject constructor(
     private val preferences: GameBootPreferences,
     private val uiMedia: UiMediaStore,
     private val audioPlayer: UiMediaAudioPlayer,
-) {
+) : LaunchPresentation {
     private val _active = MutableStateFlow<GameBootRequest?>(null)
 
     /** Non-null while a presentation should be on screen. */
@@ -82,7 +83,7 @@ class GameBootGate @Inject constructor(
      * When on, this suspends until the presentation finishes, is skipped, or times out. A second
      * request while one is already on screen is dropped, not queued.
      */
-    suspend fun awaitPresentation(gameTitle: String) {
+    override suspend fun awaitPresentation(gameTitle: String) {
         if (!preferences.gameBootEnabledFlow.first()) return
         if (isActive) {
             Timber.d("GameBoot already presenting — ignoring a second request for $gameTitle")

@@ -552,13 +552,12 @@ fun DisplaySettingsScreen(
                 onFocusChanged = { focusedSlot = if (it) UiMediaSlot.BOOT_VIDEO else null },
             )
 
-            SettingsGroup("GameBoot")
+            SettingsGroup("Launch Transition")
 
             SettingsToggleRow(
-                label    = "GameBoot",
-                sublabel = "A short presentation between confirming a game and the emulator " +
-                    "opening — five seconds built in, up to ten with your own clip — skippable " +
-                    "with Confirm or Back.  Off is a silent launch — no animation, no sound.",
+                label    = "Launch Transition",
+                sublabel = "Play a short picture-and-sound transition before opening an app or game. " +
+                    "Confirm or Back skips it. Turn off for an immediate, silent launch.",
                 onFocusChangedExternal = { if (it) focusedSlot = null },
                 checked  = state.gameBootEnabled,
                 onToggle = { viewModel.setGameBootEnabled(it) },
@@ -568,7 +567,7 @@ fun DisplaySettingsScreen(
             // presentation that never plays is a row that lies about what it does.
             if (state.gameBootEnabled) {
                 MediaAssignmentRow(
-                    label    = "GameBoot Video",
+                    label    = "Transition Video",
                     focusKey = "display_${UiMediaSlot.GAMEBOOT_VIDEO.key}",
                     sublabel = "Replace the built-in sequence with your own clip, which plays with " +
                         "its own sound — even with Menu Sounds off " + UiMediaRowText.videoCap(UiMediaSlot.GAMEBOOT_VIDEO),

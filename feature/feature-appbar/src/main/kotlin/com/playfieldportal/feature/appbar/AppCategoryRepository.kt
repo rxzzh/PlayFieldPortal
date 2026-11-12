@@ -215,10 +215,11 @@ class AppCategoryRepository @Inject constructor(
 
     /** Launches the app and, when it actually started, records the use for "Recently Used". */
     fun launch(pkg: String) {
-        if (!installedAppRepository.launchApp(pkg)) return
-        scope.launch {
-            runCatching { appUsageDao.recordLaunch(pkg, System.currentTimeMillis()) }
-                .onFailure { Timber.w(it, "Could not record app launch for $pkg") }
+        installedAppRepository.launchApp(pkg) {
+            scope.launch {
+                runCatching { appUsageDao.recordLaunch(pkg, System.currentTimeMillis()) }
+                    .onFailure { Timber.w(it, "Could not record app launch for $pkg") }
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.playfieldportal.feature.appbar.di
 
 import android.content.Context
+import com.playfieldportal.core.domain.presentation.LaunchPresentation
 import com.playfieldportal.feature.appbar.InstalledAppRepository
 import dagger.Module
 import dagger.Provides
@@ -17,5 +18,6 @@ object AppBarModule {
     @Singleton
     fun provideInstalledAppRepository(
         @ApplicationContext context: Context,
-    ): InstalledAppRepository = InstalledAppRepository(context)
+        presentation: LaunchPresentation,
+    ): InstalledAppRepository = InstalledAppRepository(context, presentation)
 }

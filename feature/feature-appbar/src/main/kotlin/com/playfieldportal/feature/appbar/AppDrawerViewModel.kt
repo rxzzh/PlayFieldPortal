@@ -147,15 +147,11 @@ class AppDrawerViewModel @Inject constructor(
     }
 
     fun launchApp(packageName: String) {
-        // Fires for both controller SELECT and a touch tap on an app tile. Deliberately silent:
-        // opening an app has no cue — the app taking the screen is the feedback. Only a game boot
-        // is scored, and that is GameBoot's presentation, not a menu sound.
-        appRepository.launchApp(packageName)
-        // Reflect the launch in the opt-in Discord presence (no-op unless Discord is connected and
-        // sharing is on). Cleared on return via MainActivity.onResume.
         val label = _uiState.value.allApps.firstOrNull { it.packageName == packageName }?.label
             ?: packageName
-        viewModelScope.launch { discordPresence.setCurrentGame(label) }
+        appRepository.launchApp(packageName) {
+            viewModelScope.launch { discordPresence.setCurrentGame(label) }
+        }
     }
 
     /**

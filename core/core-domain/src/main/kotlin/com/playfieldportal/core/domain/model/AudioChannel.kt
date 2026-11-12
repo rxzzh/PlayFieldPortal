@@ -28,7 +28,7 @@ enum class AudioChannel(val key: String, val displayName: String) {
 
     // ── Presentations — no MenuSound, addressed directly by their players ─────
     BOOT("boot", "Boot sequence"),
-    GAMEBOOT("gameboot", "GameBoot"),
+    GAMEBOOT("gameboot", "Launch Transition"),
     AMBIENCE("ambience", "Ambience"),
     ;
 

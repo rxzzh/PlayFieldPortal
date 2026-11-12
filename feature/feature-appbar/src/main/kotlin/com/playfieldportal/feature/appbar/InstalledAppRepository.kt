@@ -11,6 +11,11 @@ import android.net.Uri
 import android.os.Process
 import android.provider.Settings
 import com.playfieldportal.core.domain.model.KnownEmulatorPackages
+import com.playfieldportal.core.domain.presentation.LaunchPresentation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,7 +43,11 @@ data class InstalledApp(
 @Singleton
 class InstalledAppRepository @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val presentation: LaunchPresentation,
 ) {
+    private val launchScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var launchPending = false
+
     suspend fun getInstalledApps(): List<InstalledApp> = withContext(Dispatchers.IO) {
         val pm = context.packageManager
         val lastUsedByPackage = loadLastUsedTimestamps()
@@ -100,15 +109,34 @@ class InstalledAppRepository @Inject constructor(
             .also { Timber.d("Installed apps loaded: ${it.size} total") }
     }
 
-    /** Returns true when the app was handed to the system, false when it has no launch intent. */
-    fun launchApp(packageName: String): Boolean {
+    /** Resolve first, then play the shared transition. Repeated taps never queue launches.
+     * Returns whether the request was accepted; [onStarted] runs only after Android accepts it.
+     */
+    fun launchApp(packageName: String, onStarted: () -> Unit = {}): Boolean {
         val intent = context.packageManager.getLaunchIntentForPackage(packageName)
         if (intent == null) {
             Timber.w("No launch intent for $packageName")
             return false
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+        if (launchPending) return false
+        val label = runCatching {
+            val info = context.packageManager.getApplicationInfo(packageName, 0)
+            context.packageManager.getApplicationLabel(info).toString()
+        }.getOrDefault(packageName)
+        launchPending = true
+        launchScope.launch {
+            try {
+                presentation.awaitPresentation(label)
+                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                onStarted()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (failure: Exception) {
+                Timber.w(failure, "Could not launch $packageName")
+            } finally {
+                launchPending = false
+            }
+        }
         return true
     }
 
