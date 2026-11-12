@@ -37,16 +37,27 @@ jobs:
         run: |
           mkdir -p "$HOME/.gradle"
           echo 'org.gradle.java.installations.paths=${{ steps.java17.outputs.path }}' >> "$HOME/.gradle/gradle.properties"
+      - name: Set up Android command-line tools
+        run: |
+          sdk="$RUNNER_TEMP/android-sdk"
+          mkdir -p "$sdk/cmdline-tools"
+          curl -fL --retry 3 https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip -o "$RUNNER_TEMP/android-tools.zip"
+          echo '4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583  '"$RUNNER_TEMP/android-tools.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/android-tools.zip" -d "$sdk/cmdline-tools"
+          mv "$sdk/cmdline-tools/cmdline-tools" "$sdk/cmdline-tools/latest"
+          echo "ANDROID_HOME=$sdk" >> "$GITHUB_ENV"
+          echo "$sdk/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
       - name: Install Android SDK 37
         run: |
           set +o pipefail
           yes | sdkmanager --licenses >/dev/null
           sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
       - name: Build side-by-side Lite preview
-        run: ./gradlew :app:assembleLiteDebug --no-daemon --stacktrace
+        run: ./gradlew -Ppfp.skipDiscordNative=true :app:assembleLiteDebug --no-daemon --stacktrace
       - name: Test font import and inheritance
         run: >-
           ./gradlew
+          -Ppfp.skipDiscordNative=true
           :core:core-data:testDebugUnitTest --tests '*CustomFontImportTest'
           :core:core-ui:testDebugUnitTest --tests '*CustomFontInheritanceTest'
           :feature:feature-backup:testDebugUnitTest --tests '*BackupKeyCoverageTest'

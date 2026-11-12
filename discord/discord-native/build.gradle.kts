@@ -4,32 +4,40 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+// Lite does not depend on this module. AGP nevertheless probes CMake during configuration;
+// this opt-in switch lets Lite-only builds avoid downloading an unused NDK.
+val skipNative = providers.gradleProperty("pfp.skipDiscordNative").orNull == "true"
+
 android {
     namespace  = "com.playfieldportal.discord"
     compileSdk = 37
 
     // Pinned to the NDK version AGP 8.10.x defaults to, so native builds are reproducible across
     // machines and CI. Install with: sdkmanager "ndk;27.0.12077973"
-    ndkVersion = "27.0.12077973"
+    if (!skipNative) ndkVersion = "27.0.12077973"
 
     defaultConfig {
         minSdk = 29
         // Ship only the ABIs real TV boxes / handhelds use (decision: arm64 + armeabi-v7a).
-        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
-        externalNativeBuild {
-            cmake { cppFlags += "-std=c++17" }
+        if (!skipNative) {
+            ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
+            externalNativeBuild {
+                cmake { cppFlags += "-std=c++17" }
+            }
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
+    if (!skipNative) {
+        externalNativeBuild {
+            cmake {
+                path = file("src/main/cpp/CMakeLists.txt")
+                version = "3.22.1"
+            }
         }
     }
 
     // Consume the Discord Social SDK's prefab C++ package (headers + import lib) from the aar.
-    buildFeatures { prefab = true }
+    buildFeatures { prefab = !skipNative }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
