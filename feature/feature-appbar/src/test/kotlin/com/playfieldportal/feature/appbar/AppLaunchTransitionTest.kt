@@ -3,13 +3,11 @@ package com.playfieldportal.feature.appbar
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import com.playfieldportal.core.domain.presentation.LaunchPresentation
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.Runs
 import io.mockk.verify
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -41,29 +39,23 @@ class AppLaunchTransitionTest {
     }
     @After fun teardown() = Dispatchers.resetMain()
 
-    @Test fun `app waits for transition and repeated taps never queue another launch`() = runTest(dispatcher) {
-        val finished = CompletableDeferred<Unit>()
-        var presentations = 0
+    @Test fun `software opens without waiting for a presentation and repeated taps never queue`() = runTest(dispatcher) {
         var starts = 0
-        val repo = InstalledAppRepository(context, LaunchPresentation { presentations++; finished.await() })
+        val repo = InstalledAppRepository(context)
         assertTrue(repo.launchApp("test.app") { starts++ })
-        runCurrent()
-        assertEquals(1, presentations)
-        verify(exactly = 0) { context.startActivity(any()) }
         assertFalse(repo.launchApp("other.app"))
-        finished.complete(Unit)
-        advanceUntilIdle()
+        runCurrent()
         verify(exactly = 1) { context.startActivity(any()) }
         assertEquals(1, starts)
     }
 
-    @Test fun `missing target shows no transition`() = runTest(dispatcher) {
+    @Test fun `missing software target does not launch or report success`() = runTest(dispatcher) {
         every { pm.getLaunchIntentForPackage("missing") } returns null
-        var presentations = 0
-        val repo = InstalledAppRepository(context, LaunchPresentation { presentations++ })
-        assertFalse(repo.launchApp("missing"))
+        var starts = 0
+        val repo = InstalledAppRepository(context)
+        assertFalse(repo.launchApp("missing") { starts++ })
         advanceUntilIdle()
-        assertEquals(0, presentations)
+        assertEquals(0, starts)
         verify(exactly = 0) { context.startActivity(any()) }
     }
 
@@ -74,7 +66,7 @@ class AppLaunchTransitionTest {
             attempts++
             if (attempts == 1) throw SecurityException("test rejection")
         }
-        val repo = InstalledAppRepository(context, LaunchPresentation { })
+        val repo = InstalledAppRepository(context)
         assertTrue(repo.launchApp("first") { starts++ })
         advanceUntilIdle()
         assertEquals(0, starts)

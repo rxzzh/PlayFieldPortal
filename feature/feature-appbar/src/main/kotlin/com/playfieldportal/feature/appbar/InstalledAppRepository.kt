@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Process
 import android.provider.Settings
 import com.playfieldportal.core.domain.model.KnownEmulatorPackages
-import com.playfieldportal.core.domain.presentation.LaunchPresentation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ data class InstalledApp(
 @Singleton
 class InstalledAppRepository @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val presentation: LaunchPresentation,
 ) {
     private val launchScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var launchPending = false
@@ -109,7 +107,8 @@ class InstalledAppRepository @Inject constructor(
             .also { Timber.d("Installed apps loaded: ${it.size} total") }
     }
 
-    /** Resolve first, then play the shared transition. Repeated taps never queue launches.
+    /** Opens software directly. Game-library launches own the GameBoot presentation separately.
+     * Repeated taps never queue launches.
      * Returns whether the request was accepted; [onStarted] runs only after Android accepts it.
      */
     fun launchApp(packageName: String, onStarted: () -> Unit = {}): Boolean {
@@ -119,14 +118,9 @@ class InstalledAppRepository @Inject constructor(
             return false
         }
         if (launchPending) return false
-        val label = runCatching {
-            val info = context.packageManager.getApplicationInfo(packageName, 0)
-            context.packageManager.getApplicationLabel(info).toString()
-        }.getOrDefault(packageName)
         launchPending = true
         launchScope.launch {
             try {
-                presentation.awaitPresentation(label)
                 context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 onStarted()
             } catch (cancelled: CancellationException) {

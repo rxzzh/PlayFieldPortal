@@ -16,10 +16,10 @@ This branch keeps the custom-font work and improves the default launcher present
   wallpaper precedence.
 - VSYNC frame buckets replace a post-VSYNC sleep that could turn a nominal 30 fps into about
   20 fps on a 60 Hz panel.
-- Ordinary apps and games share `LaunchPresentation`, implemented by the existing bounded
-  GameBoot gate. Missing app targets do not show a transition; repeated taps do not enqueue
-  app launches; usage and presence update after Android accepts the launch. The setting is
-  exposed as **Launch Transition** under Display.
+- Game entries use the bounded GameBoot gate. Ordinary software opens directly without a
+  transition, including from Apps and App Detail; missing app targets do not launch, repeated
+  taps do not enqueue launches, and usage/presence update after Android accepts the launch.
+  The game-only switch is exposed as **Launch Transition** under Display.
 
 ## Local reference material
 
@@ -158,3 +158,18 @@ P90 36 -> 30 ms, P95 69 -> 32 ms and P99 89 -> 73 ms. Deadline-missed frames wer
 19 (5.78%), respectively: the long-tail frame times improved, but this sample does not establish
 a lower jank rate. The last 120 frame records show UI scheduling/work-to-sync P90 31.97 -> 15.32 ms;
 GPU P90 remained 14 ms. The final manifest-only rebuild preserves the measured rendering code.
+
+
+### Game-only presentation (2026-11-13)
+
+Software launching no longer depends on LaunchPresentation. Game dispatcher intent and shortcut
+paths additionally require `GameContentType.GAME` before awaiting GameBoot, so an Android-app
+artwork row cannot acquire the game transition by taking a different route. Curated game entries
+such as Steam Link and ES-DE keep the transition. The handheld's accepted local clip contains
+only the original PSP wordmark: no subtitle, trademark lettering or personal signature. Its
+original AAC audio stream is preserved exactly; the old private media/configuration was backed
+up before replacement. Neither clip nor logo is added to the public repository.
+
+Validation: 41 targeted checks passed (3 software launch, 33 dispatch, 5 GameBoot gate); the Lite
+debug APK installs over the existing build. The accepted PSP clip, database and preferences are
+byte-identical across the update. Private backup: `pfp-backups/2026-11-13-game-only-transition/`.

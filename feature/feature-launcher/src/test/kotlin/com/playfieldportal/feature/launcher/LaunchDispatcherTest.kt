@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.playfieldportal.core.domain.model.EmulatorProfile
 import com.playfieldportal.core.domain.model.Game
+import com.playfieldportal.core.domain.model.GameContentType
 import com.playfieldportal.core.domain.model.IntentType
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -397,6 +398,29 @@ class LaunchDispatcherTest {
     }
 
     // ── Shortcut launches (BannerHub / GameHub / any pinned launcher shortcut) ─────────────
+
+    @Test
+    fun `software entry bypasses enabled GameBoot in intent launch`() = runTest {
+        val h = harness(gameBootOn = true)
+        val app = game.copy(contentType = GameContentType.ANDROID_APP)
+        val launching = async { h.dispatcher.launch(app, null, h.intent) }
+        eventually("software is dispatched without completing any presentation") { launching.isCompleted }
+        assertIs<LaunchDispatchResult.Accepted>(launching.await())
+        assertNull(h.gameBootGate.active.value)
+        verify(exactly = 1) { h.context.startActivity(any()) }
+    }
+
+    @Test
+    fun `software shortcut bypasses enabled GameBoot`() = runTest {
+        val h = harness(gameBootOn = true)
+        var started = false
+        val app = game.copy(contentType = GameContentType.ANDROID_APP)
+        val launching = async { h.dispatcher.launchShortcut(app) { started = true; Result.success(Unit) } }
+        eventually("software shortcut starts without any presentation") { launching.isCompleted }
+        assertTrue(started)
+        assertTrue(launching.await().isSuccess)
+        assertNull(h.gameBootGate.active.value)
+    }
 
     @Test
     fun `shortcut launch waits for GameBoot before starting the shortcut`() = runTest {

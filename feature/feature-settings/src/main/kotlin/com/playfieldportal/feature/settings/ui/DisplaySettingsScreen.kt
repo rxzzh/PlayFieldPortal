@@ -556,7 +556,7 @@ fun DisplaySettingsScreen(
 
             SettingsToggleRow(
                 label    = "Launch Transition",
-                sublabel = "Play a short picture-and-sound transition before opening an app or game. " +
+                sublabel = "Play a short picture-and-sound transition before opening a game. Apps open directly. " +
                     "Confirm or Back skips it. Turn off for an immediate, silent launch.",
                 onFocusChangedExternal = { if (it) focusedSlot = null },
                 checked  = state.gameBootEnabled,

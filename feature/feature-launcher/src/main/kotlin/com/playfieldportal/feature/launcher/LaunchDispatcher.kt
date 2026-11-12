@@ -3,6 +3,7 @@ package com.playfieldportal.feature.launcher
 import android.content.Context
 import android.content.Intent
 import com.playfieldportal.core.domain.model.Game
+import com.playfieldportal.core.domain.model.GameContentType
 import com.playfieldportal.core.domain.model.PfpErrorCode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +106,7 @@ class LaunchDispatcher @Inject constructor(
         holdAmbience()
         var handedOff = false
         return try {
-            gameBootGate.awaitPresentation(game.title)
+            if (game.contentType == GameContentType.GAME) gameBootGate.awaitPresentation(game.title)
             // Every dispatcher launch comes from an app-graph context (ViewModel/Activity via the
             // shared singleton), so NEW_TASK is required to start outside our own task. Idempotent.
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -184,7 +185,7 @@ class LaunchDispatcher @Inject constructor(
     suspend fun launchShortcut(game: Game, start: () -> Result<Unit>): Result<Unit> {
         holdAmbience()
         val result = try {
-            gameBootGate.awaitPresentation(game.title)
+            if (game.contentType == GameContentType.GAME) gameBootGate.awaitPresentation(game.title)
             start()
         } catch (e: Throwable) {
             // Abandoned during GameBoot: the user is still in the launcher.
